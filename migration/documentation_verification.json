@@ -1,0 +1,29 @@
+{
+  "recorded_on": "2026-10-09",
+  "tested_document_commit": "819f474eab65133b0673175f4af408f5491d1c0c",
+  "status": "PASS",
+  "scope": "Documentation structure, relative links, source inventory and local original artifact fingerprints only",
+  "ci": {
+    "run_id": 37823773312,
+    "workflow": "Combat documentation archive check",
+    "checks": 51,
+    "relative_links_checked": 21,
+    "errors": [],
+    "snapshot_artifact_id": 11570621728,
+    "snapshot_artifact_sha256": "e0f4f8bb23ba781b819fd4a2ae64771bb4aa853b96b1216c8499eee8ae604a28"
+  },
+  "local_recheck": {
+    "input": "Downloaded exact CI documentation snapshot, with local original attachments supplied to --artifacts-dir",
+    "checks": 63,
+    "relative_links_checked": 21,
+    "original_artifact_hash_and_size_matches": 12,
+    "original_artifact_hash_or_size_mismatches": 0,
+    "errors": []
+  },
+  "repository_artifact_copies_pending": 12,
+  "engine_project_present": false,
+  "gameplay_or_godot_executed": false,
+  "formation_implemented_this_round": false,
+  "settlement_kernel_refactored_this_round": false,
+  "limits": "These checks do not establish code/assets transfer, original research reproduction, game balance, original-game testing, executable export, or user experience acceptance. This record is evidence for its explicitly pinned document commit, not a promise that later edits are tested."
+}

@@ -1,0 +1,29 @@
+name: Combat documentation archive check
+on:
+  push:
+    branches: [main, docs/combat-knowledge-20261009]
+  pull_request:
+    paths: ['README.md', 'AGENTS.md', 'docs/**', 'research/**', 'migration/**', 'tools/validate_archive.py', '.github/workflows/archive-check.yml']
+permissions:
+  contents: read
+jobs:
+  documents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check archive structure without executing gameplay
+        run: |
+          mkdir -p "$RUNNER_TEMP/combat-documents"
+          python tools/validate_archive.py --output "$RUNNER_TEMP/combat-documents/validation.json"
+          git rev-parse HEAD > "$RUNNER_TEMP/combat-documents/commit.txt"
+          git archive --format=zip --output="$RUNNER_TEMP/combat-documents/canghuo-combat-documents.zip" HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: combat-documentation-snapshot
+          path: ${{ runner.temp }}/combat-documents
+          retention-days: 14
+          if-no-files-found: error
