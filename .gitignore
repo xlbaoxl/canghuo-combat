@@ -1,0 +1,6 @@
+.godot/
+__pycache__/
+*.pyc
+builds/
+.local-tools/
+verification/current/
