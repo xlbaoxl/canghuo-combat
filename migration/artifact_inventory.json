@@ -1,0 +1,39 @@
+{
+  "manifest_version": 1,
+  "recorded_on": "2026-10-09",
+  "authoritative_repository": "xlbaoxl/canghuo-combat",
+  "scope": "Visible conversation artifacts confirmed in the working runtime; indexing is not repository transfer",
+  "code_baseline": {
+    "repository": "xlbaoxl/canghuo-game",
+    "commit": "e101fca146bf340d8738dbaa3931c827e4efc227",
+    "path": "modules/training-camp",
+    "version": "3.0.1",
+    "rules": "dual-window-1.1",
+    "content": "training-dual-1.1",
+    "save_schema": 4,
+    "destination_status": "pending_full_source_and_asset_import",
+    "source_export_run": 37821554938,
+    "source_export_scope": "Pinned unchanged module and two combat documents, not new gameplay or tests"
+  },
+  "artifacts": [
+    {"name":"combat_research_20260930_R4_final.zip","bytes":374515,"sha256":"1eba3070b3d36c4f0009a7d7d94ba50687f6db448ac5a795ae37fc3c716363a1","identity":"R4 original research package; static evidence and attributed public experience, not original-game battle tests","repository_copy":"pending"},
+    {"name":"逸剑风云决出手频率与技能冷却机制研究报告.md","bytes":16390,"sha256":"e8a7227b0e45192df658737f34e4d7b5bbc0965ab092af06930d16b647eeb81a","identity":"Original report, Build 21798996; no live battle timing","repository_copy":"pending"},
+    {"name":"藏火_新版战斗训练营Demo_Codex任务包_20261003.zip","bytes":58845,"sha256":"c3325810f57f8eb71693cc77543fd49fd363a9a0da51379c5849ab1e36497e0d","identity":"Historical first task package; flow superseded by v2","repository_copy":"pending"},
+    {"name":"藏火_新版战斗训练营Demo_Codex任务包_20261003_v2.zip","bytes":73934,"sha256":"a1acc7209981c3e2dd83a30414c82ff7893a0a87dbbad35591f93e618eae974b","identity":"Flow correction, before later dual-window upgrade","repository_copy":"pending"},
+    {"name":"藏火训练营_2.2.2_审阅与返工清单_20261004.zip","bytes":17208,"sha256":"235bf55dbe36fb0a3d2b99d9c5bf883fd353a35b7bb4b96b4a73f5d133eb487d","identity":"Version-pinned static review; not latest executable validation","repository_copy":"pending"},
+    {"name":"战斗升级策划.md","bytes":79905,"sha256":"10be2880f419c979157afb1f38c3dd8b3addd8a85e35fdf8d830c97a2dfd4126","identity":"v1.0 historical, erroneous removal of Cui superseded","repository_copy":"pending"},
+    {"name":"战斗升级策划_v1.1_恢复独立催.md","bytes":85093,"sha256":"9aa0fd21ac6ff970b82b6623ed125183484df8fe9bf8194275e6eff736965bf8","identity":"v1.1 original with author correction; no formation implementation","repository_copy":"pending"},
+    {"name":"藏火训练营_战机升级_源码更新包.zip","bytes":341883,"sha256":"940a6427355d70d476ae9d66b9b77e212b07e6675ead2df5f6e582a6cdb8bb86","identity":"3.0.0 changed-source package, not whole project","repository_copy":"pending"},
+    {"name":"藏火训练营_3.0.1_催动修正材料.zip","bytes":12089130,"sha256":"48dc0a445899cad91d012a69ea18e6cd4484c3df01ca59fe1e49789df0d49c44","identity":"3.0.1 source delta, evidence and screenshots; overlaps CI archive","repository_copy":"pending"},
+    {"name":"藏火训练营_3.0.1_恢复催_Windows.zip","bytes":74964511,"sha256":"63eb0121cd1d4ec0e9b7de43070244ebde290401ac3a43420e34ef079976a56a","identity":"Original Windows delivery, not newly built on repository migration","repository_copy":"pending_release_archive"},
+    {"name":"cui-301-ci-verification.zip","bytes":11894836,"sha256":"61f513983ea03aecc75d2b7bade52c1f06aa15fea93bdf7143e2a7974c42e592","identity":"Original CI evidence from run 37259805872","repository_copy":"pending"},
+    {"name":"cui-301-Windows-startup.zip","bytes":711,"sha256":"5a859d1efe1e7f0cd130d98a6d49b8a2b407d66aa3e606087f38ca3d27d1fffd","identity":"Actual historical headless startup smoke; not full Windows graphics playtest","repository_copy":"pending"}
+  ],
+  "unlocated_originals": [
+    "Codex_四款游戏战斗系统研究任务书.md",
+    "Codex_四款游戏战斗系统研究任务书_v2_统一全景与横向比较.md",
+    "藏火_四案例多轮学习与适配报告.md and its arithmetic attachments"
+  ],
+  "unlocated_policy": "Conversation-derived summaries are labelled as summaries; missing originals are not fabricated or assigned invented hashes.",
+  "not_completed_this_round": ["Full source and asset import into this repository", "New formation implementation", "Generic settlement-kernel refactoring", "New Godot runtime or gameplay verification", "Original artifact release mirroring"]
+}
