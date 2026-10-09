@@ -1,0 +1,37 @@
+{
+  "id": "c02",
+  "name": "赤衣女修",
+  "design": "朱红短外袍、暗色长裙、黑发高马尾、成年女修、掌击与火灵术",
+  "actions": [
+    {
+      "id": "attack",
+      "name": "朱灵掌击",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_1",
+      "name": "朱色火灵",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_2",
+      "name": "金红护身",
+      "frame_count": 8
+    }
+  ],
+  "grid": {
+    "columns": 8,
+    "rows": 6
+  },
+  "tool": "built-in image_gen",
+  "source_generated_path": "C:/Users/bxl/.codex/generated_images/01a0fd78-793f-72f3-be31-1e923a5231e1/exec-9fc3586a-0703-4f0f-8744-b9cd61d9c47e.png",
+  "notes": [
+    "最终生成图为8列6行48帧，每种动作重复两行；选第1/3/5行各8帧即24帧交付。",
+    "已修全身与约4.5-5头身；各格人物基本恒定，脚位轻微漂移；尚未接游戏。"
+  ],
+  "action_source_rows": [
+    0,
+    2,
+    4
+  ]
+}

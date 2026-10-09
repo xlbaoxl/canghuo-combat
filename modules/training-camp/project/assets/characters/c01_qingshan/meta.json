@@ -1,0 +1,32 @@
+{
+  "id": "c01",
+  "name": "青衫剑修",
+  "design": "男性青蓝窄袖佩直剑、黑发高束与青带；成年剑修",
+  "actions": [
+    {
+      "id": "attack",
+      "name": "直剑斩",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_1",
+      "name": "青色驭剑",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_2",
+      "name": "淡金护身诀",
+      "frame_count": 8
+    }
+  ],
+  "grid": {
+    "columns": 4,
+    "rows": 6
+  },
+  "tool": "built-in image_gen",
+  "source_generated_path": "C:/Users/bxl/.codex/generated_images/01a0fd78-793f-72f3-be31-1e923a5231e1/exec-7aad6f6f-548e-42ac-966f-73bc95d3178d.png",
+  "notes": [
+    "内置编辑修复为紧凑约4.5-5头身，原稿保留sheet_draft_v1.png。",
+    "24格全身及三动作完整；部分驭剑帧仍有手持剑加悬浮剑，且各行脚位偏移，需统一拆帧归位；尚未接游戏。"
+  ]
+}
