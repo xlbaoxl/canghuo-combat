@@ -1,0 +1,28 @@
+{
+  "format": 1,
+  "recorded_on": "2026-10-09",
+  "bundle_file": "canghuo-combat_完整迁移包_R3.zip",
+  "bundle_sha256": "0b6f43c2b1ad1fd521db9c22b6ed6485bc279dcf4d6ff579f09d7427efd053e5",
+  "bundle_bytes": 129775992,
+  "manifest_files": 266,
+  "payload_files": 265,
+  "local_source_dependencies": ["modules/training-camp/project/assets/fonts/NotoSansSC.ttf"],
+  "source_repository": "xlbaoxl/canghuo-game",
+  "source_commit": "e101fca146bf340d8738dbaa3931c827e4efc227",
+  "target_base_commit": "daaf1235954b02e421b4b621f7ba9553520a9bb2",
+  "preflight": "PASS",
+  "local_copy_and_hash_verification": "PASS_266_FILES",
+  "local_application_environment": "Fresh isolated local Git harness populated from the exact downloaded main snapshot, with the verified original dependency supplied locally; NOT a fresh remote clone",
+  "source_import_after_application": "PASS",
+  "source_rules_after_application": {"checks": 151, "failures": 0},
+  "publish_path_executed": false,
+  "remote_module_published": false,
+  "unlocated_original_groups": 3,
+  "status": "READY_FOR_LOCAL_AUTHENTICATED_GIT_PUBLICATION",
+  "notes": [
+    "No credentials are embedded in the bundle or required from the chat.",
+    "The bundle preserves the 3.0.1 game logic; it does not implement formations or the generic Buff refactor.",
+    "Use the local original repository only to restore manifest-declared dependencies. Do not fetch transient private URLs from a workflow.",
+    "Run the designated repository's helper with --write --publish only after reviewing its dry-run and the bundle fingerprint. It does not auto-merge."
+  ]
+}
