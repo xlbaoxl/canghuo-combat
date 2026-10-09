@@ -1,0 +1,51 @@
+name: Combat migration R2
+on:
+  push:
+    branches: [chore/combat-archive-r2-20261009]
+    paths: ['.github/migration-r2-ticket.json', '.github/workflows/migration-r2.yml']
+permissions:
+  contents: read
+jobs:
+  transfer-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check scoped private source transfer without exposing credentials
+        run: |
+          mkdir -p "$RUNNER_TEMP/r2"
+          python - <<'PY'
+          import json,os,urllib.request,urllib.parse,hashlib
+          from pathlib import Path
+          ticket=Path('.github/migration-r2-ticket.json')
+          if not ticket.exists():
+              print('Waiting for source transfer ticket; no import performed.')
+              raise SystemExit(0)
+          data=json.loads(ticket.read_text())
+          url=data['url']
+          parsed=urllib.parse.urlsplit(url)
+          assert parsed.scheme=='https' and parsed.netloc=='raw.githubusercontent.com'
+          prefix='/xlbaoxl/canghuo-game/e101fca146bf340d8738dbaa3931c827e4efc227/'
+          assert parsed.path.startswith(prefix)
+          print('::add-mask::'+parsed.query)
+          results=[]
+          for path in ['modules/training-camp/README.md','modules/training-camp/project/scripts/combat_protocol.gd']:
+              selected=urllib.parse.urlunsplit((parsed.scheme,parsed.netloc,prefix+path,parsed.query,''))
+              try:
+                  with urllib.request.urlopen(selected,timeout=30) as r:content=r.read()
+                  results.append({'path':path,'ok':True,'bytes':len(content),'sha256':hashlib.sha256(content).hexdigest()})
+              except Exception as e:results.append({'path':path,'ok':False,'error':type(e).__name__,'status':getattr(e,'code',None)})
+          Path(os.environ['RUNNER_TEMP'],'r2','transfer-check.json').write_text(json.dumps(results,indent=2))
+          print(json.dumps(results))
+          PY
+      - name: Export pinned documentation input
+        run: |
+          git rev-parse HEAD > "$RUNNER_TEMP/r2/commit.txt"
+          git archive --format=zip --output="$RUNNER_TEMP/r2/source.zip" HEAD README.md AGENTS.md docs migration research tools .github/workflows/archive-check.yml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: combat-r2-input
+          path: ${{ runner.temp }}/r2
+          retention-days: 7
