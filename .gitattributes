@@ -1,4 +1,5 @@
-research/originals/** -text
-archive/** -text
 *.py text eol=lf
 *.yml text eol=lf
+research/originals/** -text
+archive/** -text
+modules/training-camp/** -text

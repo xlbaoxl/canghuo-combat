@@ -37,8 +37,8 @@
 
 旧仓核对基线为`xlbaoxl/canghuo-game@e101fca146bf340d8738dbaa3931c827e4efc227`的`modules/training-camp/`，对应训练营3.0.1。原有PR、报告和可执行包保持历史身份；本次没有重跑Godot或发布新游戏版本。
 
-当前确认12份原始文件指纹。其中[逸剑原报告](research/originals/wandering_sword_20260930/研究报告.md)逐字节归档；四案例R4原包的8份主正文已归档，包括[四作横向报告](research/originals/combat_research_20260930_R4_final/comparison.md)、四份完整案例、8条条件结论和边界说明。R4只将CRLF换行为LF，原始与归档哈希分别记录；未改术语和结论。
+当前确认12份原始文件指纹。其中[逸剑原报告](research/originals/wandering_sword_20260930/研究报告.md)逐字节归档；四案例R4原包的8份主正文已归档，包括[四作横向报告](research/originals/combat_research_20260930_R4_final/comparison.md)、四份完整案例、8条条件结论和边界说明。R4的8份正文已恢复为与原ZIP逐字节一致；此前明确登记的CRLF→LF转换保留在历史指纹中，当前不再有换行转换。术语、结构和结论不变。
 
 R4共有36个文件，另28个证据/来源/数据/工具成员仍待迁入，原ZIP也未上载。原文中的这些相对链接保留，并在校验中显示为“已登记的待迁依赖”，不假装完整链接通过。其他历史包和未找到的早期任务书继续逐项登记，摘要不冒充原件。
 
-文档检验入口：`python tools/validate_archive.py`；反例测试：`python -m unittest discover -s tools/tests -v`。本地持有原始附件时可追加`--artifacts-dir`核对原件及CRLF→LF转换。工具只检查归档，不运行游戏，也不将已声明的28项缺口计作迁移完成。
+文档检验入口：`python tools/validate_archive.py`；反例测试：`python -m unittest discover -s tools/tests -v`。本地持有原始附件时可追加`--artifacts-dir`核对12份原件、37个研究成员和已归档正文的原字节。追加`--require-complete`会在存在迁移缺口时明确失败。工具只检查归档，不运行游戏，也不将已声明的28项缺口计作迁移完成。
