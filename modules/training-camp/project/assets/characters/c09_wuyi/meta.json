@@ -1,0 +1,47 @@
+{
+  "id": "c09_wuyi",
+  "name": "乌衣游侠",
+  "design": "成年女性，黑发高束，墨黑深青窄袖袍，淡灰绑腿，双短刀",
+  "actions": [
+    {
+      "id": "attack",
+      "name": "双刀斩",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_1",
+      "name": "青色疾风刃",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_2",
+      "name": "灰青气步",
+      "frame_count": 8
+    }
+  ],
+  "grid": {
+    "columns": 4,
+    "rows": 6
+  },
+  "actual_size": {
+    "width": 1024,
+    "height": 1536
+  },
+  "tool": "built-in image_gen",
+  "source_generated_path": "C:/Users/bxl/.codex/generated_images/01a0fd79-507e-7bf0-b22c-53a992b67ee8/exec-3e871f6e-a946-4d1e-b22c-6705cb0153c3.png",
+  "notes": [
+    "实际输出1024x1536，RGBA，24格，单格256x256。",
+    "保持生成alpha，尚未游戏接入；首尾为视觉同姿态，待统一像素同帧化。",
+    "24帧三套动作阶段清晰。",
+    "视觉头身约5–5.5，需统一复核；脚底靠下，统一切图时可校准。"
+  ],
+  "alpha": {
+    "mode": "RGBA",
+    "range": [
+      0,
+      254
+    ],
+    "transparent_ratio": 0.5579115549723307,
+    "nearly_transparent_ratio": 0.7073218027750651
+  }
+}

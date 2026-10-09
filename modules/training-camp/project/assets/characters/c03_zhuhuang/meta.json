@@ -1,0 +1,32 @@
+{
+  "id": "c03",
+  "name": "竹篁药师",
+  "design": "草绿/米白袍、药囊、竹簪、木短杖、成年女性草木修行者",
+  "actions": [
+    {
+      "id": "attack",
+      "name": "短杖横击",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_1",
+      "name": "青叶疗愈",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_2",
+      "name": "藤蔓束缚",
+      "frame_count": 8
+    }
+  ],
+  "grid": {
+    "columns": 4,
+    "rows": 6
+  },
+  "tool": "built-in image_gen",
+  "source_generated_path": "C:/Users/bxl/.codex/generated_images/01a0fd78-793f-72f3-be31-1e923a5231e1/exec-2889297f-3ab0-4c53-929a-70c6aa9e0703.png",
+  "notes": [
+    "24格三动作，每动作8帧，全身；比例目测约4.5-5头身，待统一预览检查。",
+    "动作/造型基本连贯；姿势末帧与首帧有微小手杖角度差异，脚位有少量漂移，尚未接入游戏。"
+  ]
+}

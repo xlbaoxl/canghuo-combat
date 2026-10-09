@@ -1,0 +1,730 @@
+{
+  "schema": "canghuo-training-handoff-v2",
+  "date": "2026-10-03",
+  "status": "author_scope_plus_unvalidated_working_defaults_not_game_build",
+  "baseline": {
+    "repository": "xlbaoxl/canghuo-game",
+    "branch": "docs/combat-design-relative-speed",
+    "path": "docs/新版战斗.md",
+    "commit": "6cc22314c839f646831d5bbab1b050cdce9ff561",
+    "blob": "dfbf2864cbd2242a46134008be1f71b506cab76a"
+  },
+  "scope": {
+    "training_battle": true,
+    "all_published_variants_unlocked": true,
+    "progression_system": false,
+    "research_unlock_ui": false,
+    "economy": false,
+    "loot": false,
+    "overworld": false,
+    "arbitrary_skill_editor": false,
+    "pet_main_flow": false,
+    "multiple_units_supported_in_rules": true,
+    "online_or_llm_ai": false,
+    "combat_resources_preserved": true
+  },
+  "flow": [
+    "select_character",
+    "equip_techniques_and_artifacts",
+    "open_training_selector",
+    "select_mirror_difficulty_or_preset_opponent",
+    "confirm_and_freeze_battle_snapshot",
+    "battle",
+    "result_retry_reselect_or_edit"
+  ],
+  "equipment": {
+    "technique_slots": 4,
+    "artifact_slots_demo_only": 2,
+    "min_equipped_techniques": 1,
+    "technique_capacity_rule": "sum(prepared_qi_cost_after_fixed_outside_modifiers)<=M",
+    "combat_cost_buffs_change_capacity": false,
+    "artifact_capacity_rule": "sum(F)<=base_Q",
+    "equipping_spends_E": false,
+    "same_source_family_duplicates_allowed": false,
+    "swap_retains_ready_window": true
+  },
+  "rules": {
+    "cooldown": "N-1 skipped own windows",
+    "next_ready": "W+N",
+    "initial_J": 0,
+    "initial_W": 0,
+    "initial_HP": "Hmax",
+    "initial_E": "M",
+    "all_entries_initially_ready": true,
+    "initial_buffs": "empty_unless_explicit_scene",
+    "max_simultaneous_actions_per_entry_per_window": 1,
+    "max_normal_compiled_sentences": 3,
+    "public_tick_advances_active_cooldown": false,
+    "natural_regen_clock": "public_tick"
+  },
+  "characters": [
+    {
+      "id": "C01",
+      "label": "均衡",
+      "stats": {
+        "Hmax": 3000,
+        "M": 1600,
+        "Q": 70,
+        "S": 121
+      },
+      "status": "retained_reference_input_not_revalidated"
+    },
+    {
+      "id": "C02",
+      "label": "储备",
+      "stats": {
+        "Hmax": 3600,
+        "M": 2000,
+        "Q": 55,
+        "S": 100
+      },
+      "status": "new_test_input_not_balance_claim"
+    },
+    {
+      "id": "C03",
+      "label": "周转",
+      "stats": {
+        "Hmax": 2700,
+        "M": 1400,
+        "Q": 100,
+        "S": 121
+      },
+      "status": "new_test_input_not_balance_claim"
+    },
+    {
+      "id": "C04",
+      "label": "疾行",
+      "stats": {
+        "Hmax": 2700,
+        "M": 1200,
+        "Q": 60,
+        "S": 196
+      },
+      "status": "new_test_input_not_balance_claim"
+    }
+  ],
+  "difficulty_presets": [
+    {
+      "id": "easy",
+      "label": "简单",
+      "mode": "mirror",
+      "ai_profile": "basic",
+      "strength_profile": "mirror_easy_80",
+      "loadout_source": "confirmed_player"
+    },
+    {
+      "id": "normal",
+      "label": "普通",
+      "mode": "mirror",
+      "ai_profile": "standard",
+      "strength_profile": "mirror_normal_100",
+      "loadout_source": "confirmed_player"
+    },
+    {
+      "id": "hard",
+      "label": "困难",
+      "mode": "mirror",
+      "ai_profile": "advanced",
+      "strength_profile": "mirror_hard_120",
+      "loadout_source": "confirmed_player"
+    }
+  ],
+  "ai_profiles": [
+    {
+      "id": "basic",
+      "algorithm": "legal_fixed_priority",
+      "can_swap": false,
+      "can_use_multiple_entries_per_window": true,
+      "legal_rules_shared": true
+    },
+    {
+      "id": "standard",
+      "algorithm": "one_step_reactive_with_template_setup",
+      "can_swap": false,
+      "can_use_multiple_entries_per_window": true,
+      "legal_rules_shared": true
+    },
+    {
+      "id": "advanced",
+      "algorithm": "bounded_window_sequence_and_response_rollout",
+      "can_swap": true,
+      "can_use_multiple_entries_per_window": true,
+      "legal_rules_shared": true,
+      "limits": {
+        "reserved_candidate_groups": [
+          "damage",
+          "survival",
+          "resource_setup",
+          "status_setup",
+          "swap",
+          "end_window"
+        ],
+        "opponent_rollout_policies": [
+          "pressure",
+          "preservation",
+          "balanced"
+        ],
+        "rollout_recurse_into_search": false,
+        "search_budget_scope": "shared_by_one_real_actor_window",
+        "information_policy": "public_training_observation_only",
+        "future_input_access": false,
+        "actual_future_rng_access": false,
+        "beam_width": 8,
+        "max_child_states_per_real_window": 256,
+        "max_sequence_entries": 7,
+        "max_swap_candidates_per_slot": 3,
+        "max_rollout_actor_windows": 4,
+        "max_rollout_public_ticks": 64,
+        "max_rollout_events": 256,
+        "max_total_simulated_events_per_real_window": 30000
+      }
+    },
+    {
+      "id": "experimental_deep",
+      "algorithm": "bounded_window_sequence_and_response_rollout",
+      "can_swap": true,
+      "can_use_multiple_entries_per_window": true,
+      "legal_rules_shared": true,
+      "limits": {
+        "reserved_candidate_groups": [
+          "damage",
+          "survival",
+          "resource_setup",
+          "status_setup",
+          "swap",
+          "end_window"
+        ],
+        "opponent_rollout_policies": [
+          "pressure",
+          "preservation",
+          "balanced"
+        ],
+        "rollout_recurse_into_search": false,
+        "search_budget_scope": "shared_by_one_real_actor_window",
+        "information_policy": "public_training_observation_only",
+        "future_input_access": false,
+        "actual_future_rng_access": false,
+        "beam_width": 16,
+        "max_child_states_per_real_window": 768,
+        "max_sequence_entries": 7,
+        "max_swap_candidates_per_slot": 5,
+        "max_rollout_actor_windows": 6,
+        "max_rollout_public_ticks": 96,
+        "max_rollout_events": 512,
+        "max_total_simulated_events_per_real_window": 90000
+      },
+      "status": "debug_only_unproven_strength"
+    }
+  ],
+  "strength_profiles": [
+    {
+      "id": "mirror_easy_80",
+      "display": "镜像简单：Hmax/S为80%",
+      "mode": "mirror",
+      "multiplier": {
+        "Hmax": [
+          4,
+          5
+        ],
+        "M": [
+          1,
+          1
+        ],
+        "Q": [
+          1,
+          1
+        ],
+        "S": [
+          4,
+          5
+        ]
+      },
+      "skill_parameters_unchanged": true,
+      "status": "unvalidated_working_default_not_combat_power_percentage"
+    },
+    {
+      "id": "mirror_normal_100",
+      "display": "镜像普通：相同基础面板",
+      "mode": "mirror",
+      "multiplier": {
+        "Hmax": [
+          1,
+          1
+        ],
+        "M": [
+          1,
+          1
+        ],
+        "Q": [
+          1,
+          1
+        ],
+        "S": [
+          1,
+          1
+        ]
+      },
+      "skill_parameters_unchanged": true,
+      "status": "unvalidated_working_default_not_combat_power_percentage"
+    },
+    {
+      "id": "mirror_hard_120",
+      "display": "镜像困难：Hmax/S为120%",
+      "mode": "mirror",
+      "multiplier": {
+        "Hmax": [
+          6,
+          5
+        ],
+        "M": [
+          1,
+          1
+        ],
+        "Q": [
+          1,
+          1
+        ],
+        "S": [
+          6,
+          5
+        ]
+      },
+      "skill_parameters_unchanged": true,
+      "status": "unvalidated_working_default_not_combat_power_percentage"
+    },
+    {
+      "id": "enemy_resource_125",
+      "multiplier": {
+        "Hmax": [
+          5,
+          4
+        ],
+        "M": [
+          5,
+          4
+        ],
+        "Q": [
+          5,
+          4
+        ],
+        "S": [
+          1,
+          1
+        ]
+      },
+      "default": false,
+      "display": "敌方资源优势25%，非总战力25%",
+      "skill_parameters_unchanged": true,
+      "debug_only": true
+    },
+    {
+      "id": "player_resource_150",
+      "multiplier": {
+        "Hmax": [
+          3,
+          2
+        ],
+        "M": [
+          3,
+          2
+        ],
+        "Q": [
+          3,
+          2
+        ],
+        "S": [
+          1,
+          1
+        ]
+      },
+      "default": false,
+      "display": "玩家数值优势对照，非升级系统",
+      "skill_parameters_unchanged": true,
+      "debug_only": true
+    }
+  ],
+  "encounters": [
+    {
+      "id": "C01_mirror_easy",
+      "mode": "mirror",
+      "player_preset": "C01",
+      "difficulty_preset": "easy",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C01_mirror_normal",
+      "mode": "mirror",
+      "player_preset": "C01",
+      "difficulty_preset": "normal",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C01_mirror_hard",
+      "mode": "mirror",
+      "player_preset": "C01",
+      "difficulty_preset": "hard",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C01_preset_P01",
+      "mode": "preset",
+      "player_preset": "C01",
+      "preset_opponent": "P01",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C01_preset_P02",
+      "mode": "preset",
+      "player_preset": "C01",
+      "preset_opponent": "P02",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C01_preset_P03",
+      "mode": "preset",
+      "player_preset": "C01",
+      "preset_opponent": "P03",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C02_mirror_easy",
+      "mode": "mirror",
+      "player_preset": "C02",
+      "difficulty_preset": "easy",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C02_mirror_normal",
+      "mode": "mirror",
+      "player_preset": "C02",
+      "difficulty_preset": "normal",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C02_mirror_hard",
+      "mode": "mirror",
+      "player_preset": "C02",
+      "difficulty_preset": "hard",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C02_preset_P01",
+      "mode": "preset",
+      "player_preset": "C02",
+      "preset_opponent": "P01",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C02_preset_P02",
+      "mode": "preset",
+      "player_preset": "C02",
+      "preset_opponent": "P02",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C02_preset_P03",
+      "mode": "preset",
+      "player_preset": "C02",
+      "preset_opponent": "P03",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C03_mirror_easy",
+      "mode": "mirror",
+      "player_preset": "C03",
+      "difficulty_preset": "easy",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C03_mirror_normal",
+      "mode": "mirror",
+      "player_preset": "C03",
+      "difficulty_preset": "normal",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C03_mirror_hard",
+      "mode": "mirror",
+      "player_preset": "C03",
+      "difficulty_preset": "hard",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C03_preset_P01",
+      "mode": "preset",
+      "player_preset": "C03",
+      "preset_opponent": "P01",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C03_preset_P02",
+      "mode": "preset",
+      "player_preset": "C03",
+      "preset_opponent": "P02",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C03_preset_P03",
+      "mode": "preset",
+      "player_preset": "C03",
+      "preset_opponent": "P03",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C04_mirror_easy",
+      "mode": "mirror",
+      "player_preset": "C04",
+      "difficulty_preset": "easy",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C04_mirror_normal",
+      "mode": "mirror",
+      "player_preset": "C04",
+      "difficulty_preset": "normal",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C04_mirror_hard",
+      "mode": "mirror",
+      "player_preset": "C04",
+      "difficulty_preset": "hard",
+      "enemy_loadout_source": "confirmed_player",
+      "enemy_lock_point": "start_confirmation_after_loadout"
+    },
+    {
+      "id": "C04_preset_P01",
+      "mode": "preset",
+      "player_preset": "C04",
+      "preset_opponent": "P01",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C04_preset_P02",
+      "mode": "preset",
+      "player_preset": "C04",
+      "preset_opponent": "P02",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    },
+    {
+      "id": "C04_preset_P03",
+      "mode": "preset",
+      "player_preset": "C04",
+      "preset_opponent": "P03",
+      "enemy_lock_point": "published_preset_selected_after_loadout"
+    }
+  ],
+  "library_targets": {
+    "technique_variants_min": 12,
+    "technique_variants_target_max": 16,
+    "source_families_min": 6,
+    "families_with_multiple_variants_min": 3,
+    "required_sentence_counts": [
+      1,
+      2,
+      3
+    ],
+    "artifacts_existing_unchanged": 2,
+    "artifacts_new_training_spec": 4,
+    "statuses_with_rule_tests": 11
+  },
+  "conditional_artifact_template": {
+    "event": "after_damage_committed",
+    "holder_must_be_alive": true,
+    "hp_relation": "strictly_below_configured_threshold",
+    "trigger_count_per_battle": 1,
+    "cost_payment_triggers": false,
+    "prevents_current_lethal_hit": false,
+    "effect": "apply_HUTI_for_later_applicable_direct_damage",
+    "threshold_and_amount": "to_author_in_content_data"
+  },
+  "evaluation_starting_values": {
+    "win": 1000000,
+    "loss": -1000000,
+    "draw": 0,
+    "nonterminal_min": -20000,
+    "nonterminal_max": 20000,
+    "normalization": 1000,
+    "hp_difference_weight": 10,
+    "shield_difference_weight": 2,
+    "qi_difference_weight": 1,
+    "tail_abs_cap": 500,
+    "status": "unvalidated_initial_heuristic"
+  },
+  "stop": {
+    "max_public_ticks": 600,
+    "max_own_windows_of_any_main_actor": 100,
+    "limit_result": "unresolved_observation_end",
+    "player_cancel_result": "aborted"
+  },
+  "tests": {
+    "pure_policy_initial_set": {
+      "characters": 4,
+      "mirror_loadout_fixtures": 3,
+      "initiative_orders": 2,
+      "policy_pairs": 3,
+      "runs": 72
+    },
+    "human_win_rate_guarantee": null,
+    "checks_in_this_handoff_are_gameplay_tests": false,
+    "flow_combinations": {
+      "mirror": 12,
+      "preset": 12,
+      "total": 24,
+      "status": "planned_not_played"
+    },
+    "mirror_contract_checks": [
+      "same_techniques_and_artifacts_all_difficulties",
+      "Hmax_S_and_AI_differ",
+      "M_Q_unchanged_full_load_remains_legal",
+      "runtime_isolation",
+      "self_targets_rebound",
+      "cancel_preserves_equipment",
+      "edit_invalidates_mirror_preview",
+      "retry_uses_original_snapshot",
+      "mode_switch_no_difficulty_leak",
+      "preset_does_not_counterpick"
+    ]
+  },
+  "content_to_populate": {
+    "player_starter_loadout_ids": [
+      "L_C01_START",
+      "L_C02_START",
+      "L_C03_START",
+      "L_C04_START"
+    ],
+    "preset_opponent_snapshot_ids": [
+      "OP_P01",
+      "OP_P02",
+      "OP_P03"
+    ],
+    "preset_opponent_loadout_ids": [
+      "L_P01",
+      "L_P02",
+      "L_P03"
+    ],
+    "mirror_loadout_templates_required": false,
+    "missing_definition_policy": "author_and_validate_in_local_game_before_release_not_runtime_silent_fallback"
+  },
+  "revision": "2026-10-03-flow-mirror-preset-correction",
+  "supersedes": "canghuo-training-handoff-v1",
+  "ui": {
+    "difficulty_selection_before_equipping": false,
+    "equipment_primary_button": {
+      "label": "进入训练营",
+      "placement": "bottom_right",
+      "action": "validate_equipment_then_open_selector"
+    },
+    "selector_presentation": "modal_over_equipment_page",
+    "selector_modes": [
+      "mirror",
+      "preset"
+    ],
+    "mirror_selection": "difficulty",
+    "preset_selection": "opponent_id",
+    "confirm_label": "开始战斗",
+    "cancel_label": "返回配装",
+    "cancel_preserves_equipment": true,
+    "cancel_triggers_entry_effects": false,
+    "mode_specific_fields_do_not_leak": true,
+    "refresh_mirror_after_equipment_edit": true,
+    "confirm_checks_preview_equipment_hash": true
+  },
+  "mirror": {
+    "creation_point": "after_equipment_and_mode_selection_at_start_confirmation",
+    "equipment_source": "latest_confirmed_player_equipment",
+    "copy_fields": [
+      "character_base",
+      "fixed_mastery",
+      "basic_attack_configuration",
+      "technique_ids_versions_parameters_and_slot_order",
+      "compiled_sentences_N_k",
+      "artifact_ids_versions_slots_and_configuration",
+      "public_library_permissions"
+    ],
+    "difficulty_changes_loadout": false,
+    "difficulty_changes_fixed_skill_parameters": false,
+    "relative_targets_rebound_to_mirror_faction": true,
+    "runtime_state_independent": true,
+    "runtime_sync_after_start": false,
+    "loadout_equality_scope": "battle_start_only",
+    "runtime_swap_follows_normal_rules": true,
+    "dynamic_parameter_reads": "evaluate_for_actual_holder_not_frozen_player_result",
+    "M_Q_preserved_to_keep_copied_equipment_legal": true,
+    "rounding": "core_round_int_positive_minimum_1",
+    "stat_scaling_order": "copy_player_base_apply_Hmax_S_profile_recompute_derived_fields_then_validate",
+    "generate_from_previous_battle_final_loadout_on_retry": false
+  },
+  "preset_opponents": [
+    {
+      "id": "P01",
+      "category": "wild_monster",
+      "content_role": "direct_pressure",
+      "character_snapshot_to_author": "OP_P01",
+      "loadout_template_to_author": "L_P01",
+      "ai_profile": "basic",
+      "snapshot_policy": "fixed_published_content",
+      "depends_on_player_loadout": false,
+      "scales_to_selected_character": false,
+      "requires_additional_difficulty_selection": false,
+      "inherits_mirror_difficulty": false,
+      "units_per_side": 1
+    },
+    {
+      "id": "P02",
+      "category": "npc",
+      "content_role": "protection_recovery_and_output",
+      "character_snapshot_to_author": "OP_P02",
+      "loadout_template_to_author": "L_P02",
+      "ai_profile": "standard",
+      "snapshot_policy": "fixed_published_content",
+      "depends_on_player_loadout": false,
+      "scales_to_selected_character": false,
+      "requires_additional_difficulty_selection": false,
+      "inherits_mirror_difficulty": false,
+      "units_per_side": 1
+    },
+    {
+      "id": "P03",
+      "category": "npc",
+      "content_role": "status_or_resource_pressure",
+      "character_snapshot_to_author": "OP_P03",
+      "loadout_template_to_author": "L_P03",
+      "ai_profile": "advanced",
+      "snapshot_policy": "fixed_published_content",
+      "depends_on_player_loadout": false,
+      "scales_to_selected_character": false,
+      "requires_additional_difficulty_selection": false,
+      "inherits_mirror_difficulty": false,
+      "units_per_side": 1
+    }
+  ],
+  "retry": {
+    "source": "immutable_BattleStartSnapshot",
+    "preserve": [
+      "mode",
+      "difficulty_or_preset_id",
+      "both_start_loadouts",
+      "resolved_stats",
+      "ai_profiles",
+      "seed",
+      "rule_and_content_versions",
+      "initiative_order"
+    ],
+    "rebuild_mirror_from_runtime_final_equipment": false,
+    "new_mirror_after_edit": "rebuild_from_latest_confirmed_equipment",
+    "preserve_equipment_on_selector_cancel": true,
+    "auto_save_runtime_swaps_to_user_preset": false
+  }
+}

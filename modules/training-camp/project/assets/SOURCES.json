@@ -1,0 +1,262 @@
+[
+  {
+    "path": "assets/characters/c01_qingshan/attack.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c01_qingshan\\exports\\attack_strip.png",
+    "sha256": "2c5274178b22f344321a49683aab369bf7cb14060a07364e8f7cc40b44907099"
+  },
+  {
+    "path": "assets/characters/c01_qingshan/cast_1.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c01_qingshan\\exports\\cast_1_strip.png",
+    "sha256": "689cffbee1bd6b4d7d199904b2d1bd3a1df5549796cada4a8bf5db8572247c18"
+  },
+  {
+    "path": "assets/characters/c01_qingshan/cast_2.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c01_qingshan\\exports\\cast_2_strip.png",
+    "sha256": "59c97cf68828eb6ec62e3ee39006add04fb96e7b80ca983038aa3e14dfa578fd"
+  },
+  {
+    "path": "assets/characters/c01_qingshan/prompt.txt",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c01_qingshan\\prompt.txt",
+    "sha256": "6224a2556ae00444d4e60b309fae4dee983bb1c28ad597b8a8ee1333131cf521"
+  },
+  {
+    "path": "assets/characters/c01_qingshan/meta.json",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c01_qingshan\\meta.json",
+    "sha256": "09c18eec1378597971b89acfa7b240f732ec55805c5c03922ef46875263b9640"
+  },
+  {
+    "path": "assets/characters/c02_chiyi/attack.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c02_chiyi\\exports\\attack_strip.png",
+    "sha256": "00fccc2aeda87938f6fcff876ec63ed2750de192ecbbfc238ec1683dc1b2e1f3"
+  },
+  {
+    "path": "assets/characters/c02_chiyi/cast_1.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c02_chiyi\\exports\\cast_1_strip.png",
+    "sha256": "5bfd63cee250b8da65fc103bf8ca9b2ba6e7bb01df3b27620342e54d3ee92900"
+  },
+  {
+    "path": "assets/characters/c02_chiyi/cast_2.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c02_chiyi\\exports\\cast_2_strip.png",
+    "sha256": "5f05a037facb931a2512aff9df41780edb30e59131b69da6b1ba41ae672f5650"
+  },
+  {
+    "path": "assets/characters/c02_chiyi/prompt.txt",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c02_chiyi\\prompt.txt",
+    "sha256": "acd2e4a835865e05aacd39615a85b64a315f630b866d5d5c145142ca70178cc1"
+  },
+  {
+    "path": "assets/characters/c02_chiyi/meta.json",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c02_chiyi\\meta.json",
+    "sha256": "0da54786b752623487e162e98b5f87fc813eb71902f62f501dc3eeb20492d955"
+  },
+  {
+    "path": "assets/characters/c03_zhuhuang/attack.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c03_zhuhuang\\exports\\attack_strip.png",
+    "sha256": "661b1133b1cb1f1a268a475cf12b078d479e71697ff8c96abf2eb0433d3227fc"
+  },
+  {
+    "path": "assets/characters/c03_zhuhuang/cast_1.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c03_zhuhuang\\exports\\cast_1_strip.png",
+    "sha256": "601b578690afb738eda468f5cebab5b943775ae5701eaacc4858f9c1e6d56b61"
+  },
+  {
+    "path": "assets/characters/c03_zhuhuang/cast_2.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c03_zhuhuang\\exports\\cast_2_strip.png",
+    "sha256": "fb80e937b4097b05f4cd4852b40a74b0a125a7bd0567849dcfa1efe4f9d21918"
+  },
+  {
+    "path": "assets/characters/c03_zhuhuang/prompt.txt",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c03_zhuhuang\\prompt.txt",
+    "sha256": "9d21e682276b20ee88f125b8b24be4a97d371fd92b3f4274b5965591754af864"
+  },
+  {
+    "path": "assets/characters/c03_zhuhuang/meta.json",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c03_zhuhuang\\meta.json",
+    "sha256": "4fd364c40bf5f8e111befd34ebe8a91bc6f72cb676eb628ad973cb3ef5b16c25"
+  },
+  {
+    "path": "assets/characters/c04_xuantie/attack.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c04_xuantie\\exports\\attack_strip.png",
+    "sha256": "bedabf226b55447daf9adcf822ec057d85cc8cb1d9c25a6c616267748caaa5a5"
+  },
+  {
+    "path": "assets/characters/c04_xuantie/cast_1.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c04_xuantie\\exports\\cast_1_strip.png",
+    "sha256": "191c27252fcb749d207356f5a5c77fa9facf364b57525264c0688413fc4b425c"
+  },
+  {
+    "path": "assets/characters/c04_xuantie/cast_2.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c04_xuantie\\exports\\cast_2_strip.png",
+    "sha256": "55f8caeae90f00a4106c1551f63c9db1221d8da09b415491dcde223f4fc12a88"
+  },
+  {
+    "path": "assets/characters/c04_xuantie/prompt.txt",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c04_xuantie\\prompt.txt",
+    "sha256": "aae73cfb3251313d09cd7159b9bdc5bba46a994e9d0baa2253b517a06dfd38a2"
+  },
+  {
+    "path": "assets/characters/c04_xuantie/meta.json",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c04_xuantie\\meta.json",
+    "sha256": "f4f0352563b3cbeaae3088c4d1e992972b4b11b5f547d128b956f975163fcc0a"
+  },
+  {
+    "path": "assets/characters/c05_shuiwen/attack.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c05_shuiwen\\exports\\attack_strip.png",
+    "sha256": "163e0b664b0e877afa471f27f3d7c5bd9d4b939ff233b5f5353699ca7d1b0f83"
+  },
+  {
+    "path": "assets/characters/c05_shuiwen/cast_1.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c05_shuiwen\\exports\\cast_1_strip.png",
+    "sha256": "6753949767ec25f6f0965ab373da557c1e84a0de200dcc43bab4499066081481"
+  },
+  {
+    "path": "assets/characters/c05_shuiwen/cast_2.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c05_shuiwen\\exports\\cast_2_strip.png",
+    "sha256": "fcb74c9cf2c7762ca63184702f1c455638020ee4fc4dda8ea3fd3fd7511cd3d7"
+  },
+  {
+    "path": "assets/characters/c05_shuiwen/prompt.txt",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c05_shuiwen\\prompt.txt",
+    "sha256": "c47cea05574de4fc893bd8a0e278bad6f404208e8466e8440e1a717e66805a25"
+  },
+  {
+    "path": "assets/characters/c05_shuiwen/meta.json",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c05_shuiwen\\meta.json",
+    "sha256": "928da393f3b48d7838c18044f05c06c6127cb52e4e08a828981db3140c97c90a"
+  },
+  {
+    "path": "assets/characters/c09_wuyi/attack.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c09_wuyi\\exports\\attack_strip.png",
+    "sha256": "0399e07ecbb374d8442873bb6ee5969b952329aa4f8f3e18740fc026a2e4abb4"
+  },
+  {
+    "path": "assets/characters/c09_wuyi/cast_1.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c09_wuyi\\exports\\cast_1_strip.png",
+    "sha256": "e8cd9be3bf5fbb7f21336d139ca549d903283531ec8db9fa354ac5248709ae23"
+  },
+  {
+    "path": "assets/characters/c09_wuyi/cast_2.png",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c09_wuyi\\exports\\cast_2_strip.png",
+    "sha256": "c6f13bd102cb382188ca052d5b1e3ab5225deafc5770c1ccf284cc6e9fe67852"
+  },
+  {
+    "path": "assets/characters/c09_wuyi/prompt.txt",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c09_wuyi\\prompt.txt",
+    "sha256": "cefb2baed9e5e9a8c22fc1c60c7f6a69529f886d22c677e444d07510f326b035"
+  },
+  {
+    "path": "assets/characters/c09_wuyi/meta.json",
+    "source": "D:\\novel\\game\\素材库\\01_人物动画\\characters_frames_v1\\c09_wuyi\\meta.json",
+    "sha256": "f9a9057efc2c6377a304c618c2514d7f23dc880f248990c6ae8052a5fe1093f9"
+  },
+  {
+    "path": "assets/characters/cinder_horn_ox/attack.png",
+    "source": "D:\\novel\\game\\素材库\\02_灵兽与Boss\\bosses_attack_v1\\sheets\\cinder_horn_ox.png",
+    "sha256": "238eaa162ed3046760cdbc81898352354e814f81df175dd96eb95cd5411a7d18"
+  },
+  {
+    "path": "assets/characters/cinder_horn_ox/source_manifest.json",
+    "source": "D:\\novel\\game\\素材库\\02_灵兽与Boss\\bosses_attack_v1\\manifest.json",
+    "sha256": "55f81e09913d8de4c7f0ea46c95468d34c5caaefb6dfbe0ac4bc1e0967285f8c"
+  },
+  {
+    "path": "assets/scenes/battle-courtyard.png",
+    "source": "D:\\novel\\game\\assets\\art\\combat_v2\\battle-courtyard.png",
+    "sha256": "a436a772a7b3829a84505cb21548f369bd470ad8595056f1bc6547d1e515d8a2"
+  },
+  {
+    "path": "assets/scenes/battle-courtyard.prompt.txt",
+    "source": "D:\\novel\\game\\assets\\art\\combat_v2\\battle-courtyard.prompt.txt",
+    "sha256": "a1fb01137d29c9e303e97eda2f41898b00394371c584faf3df048f185afdd7c5"
+  },
+  {
+    "path": "assets/scenes/battle-forest.png",
+    "source": "D:\\novel\\game\\assets\\art\\combat_v2\\battle-forest.png",
+    "sha256": "f53a4bd6a59eb9faca7e35ab13bcd3c08d6c6c4a3d04c04c1d5a50dcb0459772"
+  },
+  {
+    "path": "assets/scenes/battle-forest.prompt.txt",
+    "source": "D:\\novel\\game\\assets\\art\\combat_v2\\battle-forest.prompt.txt",
+    "sha256": "ab5e5c0077fabe9b6212b64f6c4e75cebd394ff90a8784885adf5e3d09805c95"
+  },
+  {
+    "path": "assets/fonts/NotoSansSC.ttf",
+    "source": "D:\\novel\\game\\assets\\fonts\\NotoSansSC.ttf",
+    "sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da"
+  },
+  {
+    "path": "assets/fonts/OFL.txt",
+    "source": "D:\\novel\\game\\assets\\fonts\\OFL.txt",
+    "sha256": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9"
+  },
+  {
+    "path": "assets/fonts/SOURCE.md",
+    "source": "D:\\novel\\game\\assets\\fonts\\SOURCE.md",
+    "sha256": "15f9fc7ad94e0b922d1f25890fe4eb0a751f2c05f8fc208eb2d413c29eb9fe5a"
+  },
+  {
+    "path": "assets/icons/blade.svg",
+    "source": "D:\\novel\\game\\assets\\icons\\blade.svg",
+    "sha256": "c2fffebbd9c8db54a0e9229190fac0fa76e37602e3ab31691d845e2d80b27b80"
+  },
+  {
+    "path": "assets/icons/guard.svg",
+    "source": "D:\\novel\\game\\assets\\icons\\guard.svg",
+    "sha256": "1ab95c348bb63e97994b47afa8b08959b8f079df998d168cd914d1b53e44ffd0"
+  },
+  {
+    "path": "assets/icons/herb.svg",
+    "source": "D:\\novel\\game\\assets\\icons\\herb.svg",
+    "sha256": "603fb1f13c06e576b7b9ec41756093ce974ae854b2a0dc814fc26c4655046bf6"
+  },
+  {
+    "path": "assets/icons/dart.svg",
+    "source": "D:\\novel\\game\\assets\\icons\\dart.svg",
+    "sha256": "969bb5c258923316534b197fb3ab5bffb0bdeab00de53b0da91510c86ca1d920"
+  },
+  {
+    "path": "assets/icons/inner_e.svg",
+    "source": "D:\\novel\\game\\assets\\icons\\inner_e.svg",
+    "sha256": "3e04b32f8f1ffc4657b42d74b3673355c4141a1fe3b36cf9ed44cf1ddbfb1eaf"
+  },
+  {
+    "path": "assets/icons/inner_y.svg",
+    "source": "D:\\novel\\game\\assets\\icons\\inner_y.svg",
+    "sha256": "92780d24882cf965a42f147c2cdb4c8e009a053934e60a8b31d284093a0ae092"
+  },
+  {
+    "path": "assets/icons/fine.svg",
+    "source": "D:\\novel\\game\\assets\\icons\\fine.svg",
+    "sha256": "0356018df7c55a9eb5817a5b3bdcc71c98f4885685d8ce6e6673e1986460d477"
+  },
+  {
+    "path": "assets/licenses/Godot-COPYRIGHT.txt",
+    "source": "D:\\novel\\game\\assets\\licenses\\Godot-COPYRIGHT.txt",
+    "sha256": "cb1980c88089573bcacd7221d777c689bb8bbd778799f24c27fca0fe5f774d6d"
+  },
+  {
+    "path": "assets/licenses/Godot-LICENSE.txt",
+    "source": "D:\\novel\\game\\assets\\licenses\\Godot-LICENSE.txt",
+    "sha256": "b0435e3b3e4e55238f05f4b306f30524a1b2e20147810d436eaa554fa6855c80"
+  },
+  {
+    "path": "assets/sfx/hit.wav",
+    "source": "D:\\novel\\game\\assets\\sfx\\hit.wav",
+    "sha256": "3771c4110d9aec17caa05a97f369904cbbf42c8b018a0af01f795c4ce80f700b"
+  },
+  {
+    "path": "assets/sfx/select.wav",
+    "source": "D:\\novel\\game\\assets\\sfx\\select.wav",
+    "sha256": "97dc0dbb1410f766f66a8861129dae03769ac52655f877e7db1ba4671d344b9a"
+  },
+  {
+    "path": "assets/sfx/complete.wav",
+    "source": "D:\\novel\\game\\assets\\sfx\\complete.wav",
+    "sha256": "37e9e0d9d9aad582aa53d360da4118d85d22f5ae005be22dc271c601f7c060e0"
+  },
+  {
+    "path": "assets/icon.svg",
+    "source": "D:\\novel\\game\\assets\\icon.svg",
+    "sha256": "f17ec6badde0d35a932776a9512978d8d5a109a93b24f91cac775c2f5cf5acb7"
+  }
+]

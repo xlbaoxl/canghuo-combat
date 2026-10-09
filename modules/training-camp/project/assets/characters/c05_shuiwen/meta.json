@@ -1,0 +1,52 @@
+{
+  "id": "c05_shuiwen",
+  "name": "水纹行者",
+  "design": "成年女性，靛蓝灰白行旅衣、发辫与拂尘。通过两次定向编辑改为紧凑约4.75头身，固定正交3/4面朝右。",
+  "actions": [
+    {
+      "id": "attack",
+      "name": "拂尘甩击",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_1",
+      "name": "水刃释放",
+      "frame_count": 8
+    },
+    {
+      "id": "cast_2",
+      "name": "水环护身",
+      "frame_count": 8
+    }
+  ],
+  "grid": {
+    "columns": 4,
+    "rows": 6,
+    "cell_width": 256,
+    "cell_height": 256,
+    "order": "row-major"
+  },
+  "tool": "built-in image_gen",
+  "source_generated_path": "C:/Users/bxl/.codex/generated_images/01a0fd78-e422-7a42-be55-7978fced43cb/exec-56733930-ff1b-488c-8884-640d83928708.png",
+  "dimensions": {
+    "width": 1024,
+    "height": 1536
+  },
+  "alpha": {
+    "mode": "RGBA",
+    "range": [
+      0,
+      254
+    ],
+    "corner": 0
+  },
+  "notes": [
+    "生成目标2048x3072，实际1024x1536，原始输出未插值。",
+    "首张偏修长，第一次比例编辑偏大头，第二次缩头约23%为选用终稿。",
+    "24帧4列6行，每动作完整静止—动作—静止。",
+    "攻击拂尘、水刃与护环可辨。首末总体同站姿但非逐像素相同。",
+    "检查透明alpha，工具预览显示的深灰不是实色底。",
+    "头身比目测约4.5—5，成人脸仍稍偏年轻；服饰和发辫稳定。",
+    "未经接入游戏。"
+  ]
+}

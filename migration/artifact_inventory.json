@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 4,
   "recorded_on": "2026-10-09",
   "authoritative_repository": "xlbaoxl/canghuo-combat",
   "scope": "Original artifact inventory; extracted-member transfers recorded separately, not full ZIP migration",
@@ -11,9 +11,11 @@
     "rules": "dual-window-1.1",
     "content": "training-dual-1.1",
     "save_schema": 4,
-    "destination_status": "pending_full_source_and_asset_import",
+    "destination_status": "source_and_assets_imported_and_verified",
     "source_export_run": 37821554938,
-    "source_export_scope": "Pinned unchanged module and two combat documents, not new gameplay or tests"
+    "source_export_scope": "Pinned unchanged module and two combat documents, not new gameplay or tests",
+    "destination_path": "modules/training-camp/",
+    "import_commit": "a092d21b2a014c90e4e22d45271b231af49ce2aa"
   },
   "artifacts": [
     {
@@ -22,11 +24,7 @@
       "sha256": "1eba3070b3d36c4f0009a7d7d94ba50687f6db448ac5a795ae37fc3c716363a1",
       "identity": "R4 original research package; static evidence and attributed public experience, not original-game battle tests",
       "repository_copy": "pending_original_zip",
-      "extracted_members": {
-        "archived": 8,
-        "total": 36,
-        "manifest": "migration/research_members.json"
-      }
+      "extracted_members": {"archived": 13, "total": 36, "manifest": "migration/research_members.json"}
     },
     {
       "name": "逸剑风云决出手频率与技能冷却机制研究报告.md",
@@ -68,7 +66,7 @@
       "bytes": 85093,
       "sha256": "9aa0fd21ac6ff970b82b6623ed125183484df8fe9bf8194275e6eff736965bf8",
       "identity": "v1.1 original with author correction; no formation implementation",
-      "repository_copy": "pending"
+      "repository_copy": "archive/game-e101fca/docs/战斗升级策划.md"
     },
     {
       "name": "藏火训练营_战机升级_源码更新包.zip",
@@ -113,12 +111,11 @@
   ],
   "unlocated_policy": "Conversation-derived summaries are labelled as summaries; missing originals are not fabricated or assigned invented hashes.",
   "not_completed_this_round": [
-    "Full source and asset import into this repository",
     "New formation implementation",
     "Generic settlement-kernel refactoring",
-    "New Godot runtime or gameplay verification",
-    "Original artifact release mirroring"
+    "Remaining original artifact and research-member mirroring",
+    "Full Windows graphical playtest and author acceptance"
   ],
   "member_manifest": "migration/research_members.json",
-  "source_migration_blocker": "Source export verified locally, but repository import run 37905170132 failed with HTTP 403 before any source write/commit. Cross-repository blob reuse rejected with HTTP 422. Full source/assets and release attachments remain pending; no access-control workaround."
+  "source_migration_blocker": "Resolved for the source module: a092d21 imported exact source/assets; clean canghuo-combat Godot checks passed. Historical artifact/member gaps remain separate."
 }

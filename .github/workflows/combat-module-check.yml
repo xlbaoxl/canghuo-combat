@@ -1,0 +1,87 @@
+name: Combat module verification
+on:
+  push:
+    branches: [main, chore/publish-combat-source-r4-20261009]
+    paths: ['modules/training-camp/**', 'migration/source_manifest.json', '.github/workflows/combat-module-check.yml']
+  pull_request:
+    paths: ['modules/training-camp/**', 'migration/source_manifest.json', '.github/workflows/combat-module-check.yml']
+permissions:
+  contents: read
+concurrency:
+  group: combat-module-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  godot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Verify every migrated source byte
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          m=json.loads(Path('migration/source_manifest.json').read_text())
+          assert m['source_commit']=='e101fca146bf340d8738dbaa3931c827e4efc227' and len(m['files'])==173
+          for r in m['files']:
+              b=Path(r['destination']).read_bytes()
+              assert len(b)==r['size'] and hashlib.sha256(b).hexdigest()==r['sha256'], r['destination']
+              assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()==r['blob'],r['destination']
+          print('173 migrated source files match their pinned original bytes.')
+          PY
+      - name: Install the same verified Godot runtime
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/godot" "$RUNNER_TEMP/combat-verify"
+          curl --fail --location --retry 2 'https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip' -o "$RUNNER_TEMP/godot/engine.zip"
+          echo 'cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  '"$RUNNER_TEMP/godot/engine.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/godot/engine.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64"
+          echo "GODOT=$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64" >> "$GITHUB_ENV"
+          echo "UPGRADE_VERIFY_DIR=$RUNNER_TEMP/combat-verify" >> "$GITHUB_ENV"
+          git rev-parse HEAD > "$RUNNER_TEMP/combat-verify/commit.txt"
+          sudo apt-get update -qq
+          sudo apt-get install -y xvfb libgl1-mesa-dri
+      - name: Import clean source and execute real rule suites
+        run: |
+          set -euo pipefail
+          PROJECT=modules/training-camp/project
+          "$GODOT" --version | tee "$UPGRADE_VERIFY_DIR/engine-version.txt"
+          "$GODOT" --headless --path "$PROJECT" --editor --import --quit 2>&1 | tee "$UPGRADE_VERIFY_DIR/import.log"
+          for SUITE in test_upgrade test_presentation_upgrade threaded_upgrade test_upgrade_battles; do
+            "$GODOT" --headless --path "$PROJECT" --script res://tests/$SUITE.gd 2>&1 | tee "$UPGRADE_VERIFY_DIR/$SUITE.log"
+          done
+      - name: Exercise native controls and a separate restart
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          set -euo pipefail
+          PROJECT=modules/training-camp/project
+          timeout 360 xvfb-run -a "$GODOT" --path "$PROJECT" --rendering-method gl_compatibility --audio-driver Dummy -- --native-check="$UPGRADE_VERIFY_DIR/ui" 2>&1 | tee "$UPGRADE_VERIFY_DIR/ui.log"
+          timeout 90 xvfb-run -a "$GODOT" --path "$PROJECT" --rendering-method gl_compatibility --audio-driver Dummy -- --reload-check="$UPGRADE_VERIFY_DIR/ui" 2>&1 | tee "$UPGRADE_VERIFY_DIR/restart.log"
+      - name: Retain actual result summaries and unchanged-source check
+        run: |
+          python - <<'PY'
+          import os,json,hashlib
+          from pathlib import Path
+          root=Path(os.environ['UPGRADE_VERIFY_DIR'])
+          out=[]
+          for p in root.rglob('*.json'):
+              data=json.loads(p.read_text())
+              if isinstance(data,dict) and 'failures' in data:
+                  f=data['failures']
+                  assert f==0 or f==[], str(p)
+                  out.append({'path':str(p.relative_to(root)),'checks':data.get('checks',data.get('count')),'failures':f,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          assert len(out)>=4,'Expected real suite outputs'
+          (root/'verification-summary.json').write_text(json.dumps({'scope':'Actual Godot project checked out from canghuo-combat; Linux software graphics, not Windows or author playtest','results':out},ensure_ascii=False,indent=2))
+          PY
+          git diff --exit-code -- modules/training-camp
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: combat-module-verification
+          path: ${{ runner.temp }}/combat-verify
+          retention-days: 30
+          if-no-files-found: error
