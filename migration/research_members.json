@@ -1,0 +1,60 @@
+{
+  "format": 1,
+  "recorded_on": "2026-10-09",
+  "scope": "Member-level archive receipts, not original research re-verification or runtime migration",
+  "packages": [
+    {
+      "source_artifact": "combat_research_20260930_R4_final.zip",
+      "source_prefix": "combat_research_20260930_R4_final/",
+      "archive_root": "research/originals/combat_research_20260930_R4_final",
+      "total_members": 36,
+      "members": [
+        {"member":"cases/圣兽之王.md","destination":"research/originals/combat_research_20260930_R4_final/cases/圣兽之王.md","status":"archived","source_bytes":16587,"source_sha256":"5c9666def0b39fa028d80b0ea578395b1cd73d294a0b429a135c182035e53269","transform":"crlf_to_lf","archived_bytes":16360,"archived_sha256":"fb94d51c226837b49384086ada5489185a9b9246100ad3ee3286f08c962c73d3"},
+        {"member":"cases/太吾绘卷.md","destination":"research/originals/combat_research_20260930_R4_final/cases/太吾绘卷.md","status":"archived","source_bytes":16476,"source_sha256":"7c55a767574e2e93ba850af0c10eaeb03249e6184f4fd5fc6eb4d686be164f44","transform":"crlf_to_lf","archived_bytes":16249,"archived_sha256":"38c747d6a274f9a2c739db28fc5abe26037b7666516fd64dca5613c0bad952c3"},
+        {"member":"cases/弈仙牌.md","destination":"research/originals/combat_research_20260930_R4_final/cases/弈仙牌.md","status":"archived","source_bytes":16743,"source_sha256":"cc60c9a47edbedf63e3a4bb6597712d58a60d81797bb2cf0d1638367a6aeebd4","transform":"crlf_to_lf","archived_bytes":16516,"archived_sha256":"b126b3df4478fc8d9a6e1c37ff83a1f132fab661c308676244ee0c328051272b"},
+        {"member":"cases/觅长生.md","destination":"research/originals/combat_research_20260930_R4_final/cases/觅长生.md","status":"archived","source_bytes":16867,"source_sha256":"2ac8f1c51a08a4809143f558dce07e6dfe7933a6e3c9b6a8a37d401a448edc94","transform":"crlf_to_lf","archived_bytes":16640,"archived_sha256":"d4eacae408524eae9aa2b8c9e2000089278215c8ad92836ba4d5c1246b98c4ce"},
+        {"member":"closure.md","destination":"research/originals/combat_research_20260930_R4_final/closure.md","status":"archived","source_bytes":21983,"source_sha256":"39c20abc7aa67a0823c883110e3bf0037e3e3ae34d8ba93f699c4bc1da5df812","transform":"crlf_to_lf","archived_bytes":21807,"archived_sha256":"ffc0ef754d5f4fd2d5763b57c8f90fdb571422bd675db9ae41e4c8af85a02873"},
+        {"member":"comparison.md","destination":"research/originals/combat_research_20260930_R4_final/comparison.md","status":"archived","source_bytes":27909,"source_sha256":"91d4a1cb278bf15ebf155262b45ebbbc0fbfb891378ac82fcff831cfe204728e","transform":"crlf_to_lf","archived_bytes":27692,"archived_sha256":"642fc9e2d5dafb474703b7c1654aa79195a122352f24115534e63107ef8556d0"},
+        {"member":"coverage.csv","destination":"research/originals/combat_research_20260930_R4_final/coverage.csv","status":"pending","source_bytes":73206,"source_sha256":"d9dfa5daf5e6e1451b359fd3994bae3a6f0fbcb78c2c9d80528df1284e2c42e2"},
+        {"member":"data/claim_boundaries.json","destination":"research/originals/combat_research_20260930_R4_final/data/claim_boundaries.json","status":"pending","source_bytes":71681,"source_sha256":"30dcb70dfaae52293b8c59088e5a1912aff72957cb198008aa4b2c887f235626"},
+        {"member":"data/design_synthesis.json","destination":"research/originals/combat_research_20260930_R4_final/data/design_synthesis.json","status":"pending","source_bytes":39556,"source_sha256":"2be212bc832d7b95e07e813f09cdaf69f21ff7a60dd22c607b5dac73ed0a9967"},
+        {"member":"data/editorial_review_R4.json","destination":"research/originals/combat_research_20260930_R4_final/data/editorial_review_R4.json","status":"pending","source_bytes":1161,"source_sha256":"08af8ef29c35d403b0a9fae3be7a882804a6e878e2d0c7223a971b795d3b04ff"},
+        {"member":"data/experience_matrix_R3.json","destination":"research/originals/combat_research_20260930_R4_final/data/experience_matrix_R3.json","status":"pending","source_bytes":122529,"source_sha256":"62b63196c7db8cdcc621105c81a2671f4e9b0e4b3be7f08e9a4aad81f23ec6b8"},
+        {"member":"data/file_manifest.json","destination":"research/originals/combat_research_20260930_R4_final/data/file_manifest.json","status":"pending","source_bytes":5798,"source_sha256":"5e2322dcb346cec42a10a7aa81ebb32d8d263a15588fc843bb72688ecea31ab1"},
+        {"member":"data/final_cases.json","destination":"research/originals/combat_research_20260930_R4_final/data/final_cases.json","status":"pending","source_bytes":122828,"source_sha256":"6c4df62a9868f2a7e41b8986714e87ec67cedb4507d9f92cae2eef6dc3fd193c"},
+        {"member":"data/mechanism_audit.json","destination":"research/originals/combat_research_20260930_R4_final/data/mechanism_audit.json","status":"pending","source_bytes":7976,"source_sha256":"20ec9e433aff514a8930219083b6e824d1878ce491a6ffbc2603c88cba19c621"},
+        {"member":"data/package_validation.json","destination":"research/originals/combat_research_20260930_R4_final/data/package_validation.json","status":"pending","source_bytes":847,"source_sha256":"13bcebb1498ca668d7a217c6ba07b99e8380e27fb34e40409a04de4e52019a55"},
+        {"member":"data/provenance_R4.json","destination":"research/originals/combat_research_20260930_R4_final/data/provenance_R4.json","status":"pending","source_bytes":5252,"source_sha256":"7c29f265d7949c5bbc1f14f0a4fcc3ed37afb970333f40f29ca04bfd4d590f82"},
+        {"member":"data/r2_actions_resources.json","destination":"research/originals/combat_research_20260930_R4_final/data/r2_actions_resources.json","status":"pending","source_bytes":51618,"source_sha256":"9a074502b612819e0aa48a4eea73a90b12188f23d23848371b6c6635c3fcc05a"},
+        {"member":"data/r2_builds_opponents_growth.json","destination":"research/originals/combat_research_20260930_R4_final/data/r2_builds_opponents_growth.json","status":"pending","source_bytes":71370,"source_sha256":"7696db1e1c6cc9f4b50c7f49b154b30a60d366404507a4ff68e70124ac45c1de"},
+        {"member":"data/r2_effects_settlement.json","destination":"research/originals/combat_research_20260930_R4_final/data/r2_effects_settlement.json","status":"pending","source_bytes":47447,"source_sha256":"b2c7bafeed87c45593af603ac3dac59dac19dce818f9b9053b4d97c5c4ce4f7b"},
+        {"member":"data/r2_information_feedback.json","destination":"research/originals/combat_research_20260930_R4_final/data/r2_information_feedback.json","status":"pending","source_bytes":32179,"source_sha256":"88b56d12d50059688b1ccc21d8516aaf4bf432760f67f7b1f8288bea16f5d990"},
+        {"member":"data/r3_mcs_reviews.json","destination":"research/originals/combat_research_20260930_R4_final/data/r3_mcs_reviews.json","status":"pending","source_bytes":38213,"source_sha256":"826b1bd38bc8789eeffd3c5c0e0f2128b05ff4b123a965ac0c67bfe80a616b26"},
+        {"member":"data/r3_tw_reviews.json","destination":"research/originals/combat_research_20260930_R4_final/data/r3_tw_reviews.json","status":"pending","source_bytes":47286,"source_sha256":"0c87836305c2a88a05ef9cdb763ba4220de56f9383db0ae035e6071180991188"},
+        {"member":"data/r3_uo_reviews.json","destination":"research/originals/combat_research_20260930_R4_final/data/r3_uo_reviews.json","status":"pending","source_bytes":23105,"source_sha256":"5bc532ffb0bba44671f31cd7ba61532080c0d8472591fff42baa0bc64851899c"},
+        {"member":"data/r3_yxp_reviews.json","destination":"research/originals/combat_research_20260930_R4_final/data/r3_yxp_reviews.json","status":"pending","source_bytes":55034,"source_sha256":"8fcb09680b17356a4bdc8ca36552bf82f574f5a67cbd117097f1ef277b2d827f"},
+        {"member":"data/source_hash_validation_R3.json","destination":"research/originals/combat_research_20260930_R4_final/data/source_hash_validation_R3.json","status":"pending","source_bytes":8850,"source_sha256":"b54243840997db87239f04a959e2494d086c40894a2361ba698ce9f62765d59f"},
+        {"member":"data/source_selection_audit_R3.json","destination":"research/originals/combat_research_20260930_R4_final/data/source_selection_audit_R3.json","status":"pending","source_bytes":15501,"source_sha256":"2e157d2dfdb02cad8133ba00947288bf8b0fa8e84ebfda00c0be91e366ae3bff"},
+        {"member":"design_principles.md","destination":"research/originals/combat_research_20260930_R4_final/design_principles.md","status":"archived","source_bytes":33268,"source_sha256":"8ee5b59f9c4c7613c8a988c6e9a57d68c4defdd08e9df62b7ada053c70cd1b0a","transform":"crlf_to_lf","archived_bytes":32832,"archived_sha256":"f3946365403248e148e65494aceeda54ce09d3bcc0db03dbf78c5755291abcfb"},
+        {"member":"discoveries.csv","destination":"research/originals/combat_research_20260930_R4_final/discoveries.csv","status":"pending","source_bytes":47120,"source_sha256":"a7855030deaa857dfb3693c1f36c4eae0207e06699ccd352c9c378a3d1818899"},
+        {"member":"evidence.csv","destination":"research/originals/combat_research_20260930_R4_final/evidence.csv","status":"pending","source_bytes":132496,"source_sha256":"099b120964dd85ce716113c7901469866541a54d742f5e349b361daf10516fbf"},
+        {"member":"experience_claims.csv","destination":"research/originals/combat_research_20260930_R4_final/experience_claims.csv","status":"pending","source_bytes":15375,"source_sha256":"b49787fc165669b459b6191e15ee22ce44564f86afe278dbc229481a5a6e716c"},
+        {"member":"README.md","destination":"research/originals/combat_research_20260930_R4_final/README.md","status":"archived","source_bytes":3904,"source_sha256":"38b26b98a591df7d2b6580e224528da15e23e885baf0fd3e2206acf8b708d7b3","transform":"crlf_to_lf","archived_bytes":3863,"archived_sha256":"346781dfa813333428fdee7d71347543f82dff4cbe580a4b5b7de91edfb2f63c"},
+        {"member":"relations.csv","destination":"research/originals/combat_research_20260930_R4_final/relations.csv","status":"pending","source_bytes":23058,"source_sha256":"40b0aee93bead296238fb10e174ecea824f4b9f885128d4e20df7c3bbf104694"},
+        {"member":"sources.md","destination":"research/originals/combat_research_20260930_R4_final/sources.md","status":"pending","source_bytes":19961,"source_sha256":"7a8813ac0063cbb98410bac78d81eb6a978ed74a5328420b01aee5f1879d17a6"},
+        {"member":"sources_R3.csv","destination":"research/originals/combat_research_20260930_R4_final/sources_R3.csv","status":"pending","source_bytes":33920,"source_sha256":"3ce203068bdf637a2656332bb3484f81b7511ae549185778264b2ccc3911599a"},
+        {"member":"tools/validate_research.py","destination":"research/originals/combat_research_20260930_R4_final/tools/validate_research.py","status":"pending","source_bytes":7143,"source_sha256":"030fa5b38516c5f656bacab34542fe5ded9e9496be315da5beb18e37bc25f5b7"},
+        {"member":"variables.csv","destination":"research/originals/combat_research_20260930_R4_final/variables.csv","status":"pending","source_bytes":51382,"source_sha256":"08feafab3f7232d63ecade8e4b4a1a6cbd8bc2a3693e5fd20c246f9e8dddb7f2"}
+      ]
+    },
+    {
+      "source_artifact": "逸剑风云决出手频率与技能冷却机制研究报告.md",
+      "source_prefix": "",
+      "archive_root": "research/originals/wandering_sword_20260930",
+      "total_members": 1,
+      "members": [
+        {"member":"研究报告.md","destination":"research/originals/wandering_sword_20260930/研究报告.md","status":"archived","source_bytes":16390,"source_sha256":"e8a7227b0e45192df658737f34e4d7b5bbc0965ab092af06930d16b647eeb81a","transform":"identity","archived_bytes":16390,"archived_sha256":"e8a7227b0e45192df658737f34e4d7b5bbc0965ab092af06930d16b647eeb81a"}
+      ]
+    }
+  ]
+}
