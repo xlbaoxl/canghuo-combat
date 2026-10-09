@@ -21,6 +21,8 @@ from pathlib import Path, PurePosixPath
 REPOSITORY = 'xlbaoxl/canghuo-combat'
 MAX_FILE = 96 * 1024 * 1024
 MAX_TOTAL = 512 * 1024 * 1024
+SOURCE_REPOSITORY = 'xlbaoxl/canghuo-game'
+SOURCE_COMMIT = 'e101fca146bf340d8738dbaa3931c827e4efc227'
 
 
 def digest(data: bytes) -> str:
@@ -42,7 +44,7 @@ def safe_target(root: Path, name: str) -> Path:
     return target
 
 
-def prepare(bundle: Path, root: Path) -> tuple[dict, list[tuple[Path, bytes, str]]]:
+def prepare(bundle: Path, root: Path, source_repo: Path | None = None) -> tuple[dict, list[tuple[Path, bytes, str]]]:
     """Read every entry and check every precondition before any write."""
     with zipfile.ZipFile(bundle) as z:
         infos = z.infolist()
@@ -59,14 +61,34 @@ def prepare(bundle: Path, root: Path) -> tuple[dict, list[tuple[Path, bytes, str
         names = [r['path'] for r in rows]
         if len(set(names)) != len(names):
             raise ValueError('Duplicate destination')
-        expected = {'migration-bundle.json', 'README.txt'} | {'payload/' + name for name in names}
+        if len(rows) > 1000 or sum(int(r['size']) for r in rows) > MAX_TOTAL:
+            raise ValueError('Expanded manifest too large')
+        expected = {'migration-bundle.json', 'README.txt'} | {
+            'payload/' + r['path'] for r in rows if r.get('storage', 'payload') == 'payload'
+        }
         if {i.filename for i in infos if not i.is_dir()} != expected:
             raise ValueError('Unmanifested or missing bundle member')
         prepared = []
         for row in rows:
             name = row['path']
             target = safe_target(root, name)
-            data = z.read('payload/' + name)
+            storage = row.get('storage', 'payload')
+            if storage == 'payload':
+                data = z.read('payload/' + name)
+            elif storage == 'local_source':
+                if row.get('source_commit') != SOURCE_COMMIT or row.get('source_path') != name or not name.startswith('modules/training-camp/'):
+                    raise ValueError('Invalid original source dependency: ' + name)
+                if target.is_file() and digest(target.read_bytes()) == row['sha256']:
+                    data = target.read_bytes()
+                else:
+                    if source_repo is None:
+                        raise ValueError('Original project dependency requires --source-repo pointing to the existing local canghuo-game clone: ' + name)
+                    remote = command(['git', 'remote', 'get-url', 'origin'], source_repo, True)
+                    if remote not in {f'https://github.com/{SOURCE_REPOSITORY}', f'https://github.com/{SOURCE_REPOSITORY}.git', f'git@github.com:{SOURCE_REPOSITORY}.git', f'ssh://git@github.com/{SOURCE_REPOSITORY}.git'}:
+                        raise ValueError('Original source repository does not match')
+                    data = subprocess.run(['git', 'show', SOURCE_COMMIT + ':' + name], cwd=source_repo, check=True, stdout=subprocess.PIPE).stdout
+            else:
+                raise ValueError('Unknown storage kind: ' + storage)
             if len(data) != row['size'] or digest(data) != row['sha256']:
                 raise ValueError('Payload fingerprint mismatch: ' + name)
             if row.get('mode', '100644') not in ('100644', '100755'):
@@ -84,7 +106,7 @@ def prepare(bundle: Path, root: Path) -> tuple[dict, list[tuple[Path, bytes, str
 
 
 def command(args: list[str], cwd: Path, capture: bool = False) -> str:
-    result = subprocess.run(args, cwd=cwd, check=True, text=True,
+    result = subprocess.run(args, cwd=cwd, check=True, text=True, encoding='utf-8', errors='replace',
                             stdout=subprocess.PIPE if capture else None)
     return (result.stdout or '').strip()
 
@@ -106,6 +128,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--bundle', type=Path, required=True)
     parser.add_argument('--repo', type=Path, required=True)
+    parser.add_argument('--source-repo', type=Path, help='Optional existing local original repository for manifest-declared original project dependencies')
     parser.add_argument('--write', action='store_true')
     parser.add_argument('--publish', action='store_true')
     parser.add_argument('--branch', default='chore/import-combat-complete-r3-20261009')
@@ -121,7 +144,7 @@ def main() -> int:
         if not re.fullmatch(r'[A-Za-z0-9_./-]+', args.branch) or '..' in args.branch or args.branch == 'main':
             raise ValueError('Use a separate ordinary branch')
         check_clone(root)
-        manifest, prepared = prepare(args.bundle.resolve(), root)
+        manifest, prepared = prepare(args.bundle.resolve(), root, args.source_repo.resolve() if args.source_repo else None)
         report.update(bundle_sha256=digest(args.bundle.read_bytes()), files=len(prepared),
                       source_commit=manifest['source_commit'])
         if args.publish:
