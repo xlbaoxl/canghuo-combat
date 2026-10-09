@@ -1,9 +1,9 @@
 name: Combat documentation archive check
 on:
   push:
-    branches: [main, docs/combat-knowledge-20261009]
+    branches: [main, docs/combat-knowledge-20261009, chore/archive-and-source-r2b-20261009]
   pull_request:
-    paths: ['README.md', 'AGENTS.md', 'docs/**', 'research/**', 'migration/**', 'tools/validate_archive.py', '.github/workflows/archive-check.yml']
+    paths: ['README.md', 'AGENTS.md', '.gitattributes', 'docs/**', 'research/**', 'migration/**', 'tools/**', '.github/workflows/archive-check.yml']
 permissions:
   contents: read
 jobs:
@@ -14,12 +14,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Check archive structure without executing gameplay
+      - name: Preserve the exact documentation input
         run: |
           mkdir -p "$RUNNER_TEMP/combat-documents"
-          python tools/validate_archive.py --output "$RUNNER_TEMP/combat-documents/validation.json"
           git rev-parse HEAD > "$RUNNER_TEMP/combat-documents/commit.txt"
-          git archive --format=zip --output="$RUNNER_TEMP/combat-documents/canghuo-combat-documents.zip" HEAD
+          git archive --format=zip --output="$RUNNER_TEMP/combat-documents/canghuo-combat-documents.zip" HEAD README.md AGENTS.md .gitattributes docs research migration tools .github/workflows/archive-check.yml
+      - name: Check validation failures with negative examples
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tools/tests -v 2>&1 | tee "$RUNNER_TEMP/combat-documents/tests.log"
+      - name: Check archive structure without executing gameplay
+        run: python tools/validate_archive.py --output "$RUNNER_TEMP/combat-documents/validation.json"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
