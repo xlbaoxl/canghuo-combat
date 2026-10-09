@@ -1,0 +1,77 @@
+name: Import pinned combat source
+on:
+  push:
+    branches: [chore/archive-and-source-r2b-20261009]
+    paths: ['.github/source-ticket.json']
+permissions:
+  contents: read
+concurrency:
+  group: combat-source-import
+  cancel-in-progress: false
+jobs:
+  import-and-verify:
+    if: github.repository == 'xlbaoxl/canghuo-combat'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      GODOT_SILENCE_ROOT_WARNING: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Import only the approved pinned module and historical designs
+        run: |
+          mkdir -p "$RUNNER_TEMP/migration-verification"
+          echo "UPGRADE_VERIFY_DIR=$RUNNER_TEMP/migration-verification" >> "$GITHUB_ENV"
+          python tools/import_combat_source.py --ticket .github/source-ticket.json
+      - name: Get the same engine used for the source baseline
+        run: |
+          mkdir -p "$RUNNER_TEMP/godot"
+          curl -fLsS --retry 2 'https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip' -o "$RUNNER_TEMP/godot/editor.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  $RUNNER_TEMP/godot/editor.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/godot/editor.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64"
+          echo "GODOT=$RUNNER_TEMP/godot/Godot_v4.7.2-stable_linux.x86_64" >> "$GITHUB_ENV"
+      - name: Execute the imported project, not a replacement model
+        run: |
+          set -o pipefail
+          P=modules/training-camp/project
+          "$GODOT" --version | tee "$UPGRADE_VERIFY_DIR/engine-version.txt"
+          "$GODOT" --headless --path "$P" --editor --import --quit 2>&1 | tee "$UPGRADE_VERIFY_DIR/import.log"
+          for suite in test_upgrade test_presentation_upgrade threaded_upgrade test_upgrade_battles; do
+            "$GODOT" --headless --path "$P" --script "res://tests/$suite.gd" 2>&1 | tee "$UPGRADE_VERIFY_DIR/$suite.log"
+          done
+          "$GODOT" --headless --path "$P" -- --export-check="$UPGRADE_VERIFY_DIR/source-startup" 2>&1 | tee "$UPGRADE_VERIFY_DIR/source-startup.log"
+      - name: Check byte identity after the engine tests and commit only imported paths
+        env:
+          INPUT_COMMIT: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,os
+          receipt=json.loads(Path('migration/source_import_receipt.json').read_text())
+          paths=[]
+          for row in receipt['files']:
+              path=Path(row['destination'])
+              assert path.stat().st_size==row['size'] and hashlib.sha256(path.read_bytes()).hexdigest()==row['sha256'],str(path)
+              paths.append(str(path))
+          paths+=['migration/source_manifest_e101fca.json','migration/source_import_receipt.json','migration/source_runtime_verification.json']
+          result={'status':'PASS','input_commit':os.environ['INPUT_COMMIT'],'workflow_run':os.environ['GITHUB_RUN_ID'],'source_commit':receipt['source_commit'],'module_files':receipt['module_files'],'byte_identity_after_tests':True,'engine_executed':True,'suites':['test_upgrade','test_presentation_upgrade','threaded_upgrade','test_upgrade_battles'],'source_headless_startup':True,'exported_new_game':False,'native_graphical_playtest':False,'formation_implemented':False,'kernel_refactored':False}
+          Path('migration/source_runtime_verification.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+          Path(os.environ['RUNNER_TEMP'],'source-paths').write_bytes(b'\0'.join(p.encode() for p in paths)+b'\0')
+          PY
+          git add --pathspec-from-file="$RUNNER_TEMP/source-paths" --pathspec-file-nul
+          git rm .github/source-ticket.json
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore: migrate verified 3.0.1 combat module and original design snapshots'
+          git push origin HEAD:refs/heads/chore/archive-and-source-r2b-20261009
+          git rev-parse HEAD > "$UPGRADE_VERIFY_DIR/verified-commit.txt"
+          cp migration/source_*json "$UPGRADE_VERIFY_DIR/"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: combat-source-migration-verification
+          path: ${{ runner.temp }}/migration-verification
+          retention-days: 14
+          if-no-files-found: error
