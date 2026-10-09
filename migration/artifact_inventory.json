@@ -1,8 +1,8 @@
 {
-  "manifest_version": 1,
+  "manifest_version": 2,
   "recorded_on": "2026-10-09",
   "authoritative_repository": "xlbaoxl/canghuo-combat",
-  "scope": "Visible conversation artifacts confirmed in the working runtime; indexing is not repository transfer",
+  "scope": "Original artifact inventory; extracted-member transfers recorded separately, not full ZIP migration",
   "code_baseline": {
     "repository": "xlbaoxl/canghuo-game",
     "commit": "e101fca146bf340d8738dbaa3931c827e4efc227",
@@ -16,8 +16,8 @@
     "source_export_scope": "Pinned unchanged module and two combat documents, not new gameplay or tests"
   },
   "artifacts": [
-    {"name":"combat_research_20260930_R4_final.zip","bytes":374515,"sha256":"1eba3070b3d36c4f0009a7d7d94ba50687f6db448ac5a795ae37fc3c716363a1","identity":"R4 original research package; static evidence and attributed public experience, not original-game battle tests","repository_copy":"pending"},
-    {"name":"逸剑风云决出手频率与技能冷却机制研究报告.md","bytes":16390,"sha256":"e8a7227b0e45192df658737f34e4d7b5bbc0965ab092af06930d16b647eeb81a","identity":"Original report, Build 21798996; no live battle timing","repository_copy":"pending"},
+    {"name":"combat_research_20260930_R4_final.zip","bytes":374515,"sha256":"1eba3070b3d36c4f0009a7d7d94ba50687f6db448ac5a795ae37fc3c716363a1","identity":"R4 original research package; static evidence and attributed public experience, not original-game battle tests","repository_copy":"pending_original_zip","extracted_members":{"archived":8,"total":36,"manifest":"migration/research_members.json"}},
+    {"name":"逸剑风云决出手频率与技能冷却机制研究报告.md","bytes":16390,"sha256":"e8a7227b0e45192df658737f34e4d7b5bbc0965ab092af06930d16b647eeb81a","identity":"Original report, Build 21798996; no live battle timing","repository_copy":"research/originals/wandering_sword_20260930/研究报告.md"},
     {"name":"藏火_新版战斗训练营Demo_Codex任务包_20261003.zip","bytes":58845,"sha256":"c3325810f57f8eb71693cc77543fd49fd363a9a0da51379c5849ab1e36497e0d","identity":"Historical first task package; flow superseded by v2","repository_copy":"pending"},
     {"name":"藏火_新版战斗训练营Demo_Codex任务包_20261003_v2.zip","bytes":73934,"sha256":"a1acc7209981c3e2dd83a30414c82ff7893a0a87dbbad35591f93e618eae974b","identity":"Flow correction, before later dual-window upgrade","repository_copy":"pending"},
     {"name":"藏火训练营_2.2.2_审阅与返工清单_20261004.zip","bytes":17208,"sha256":"235bf55dbe36fb0a3d2b99d9c5bf883fd353a35b7bb4b96b4a73f5d133eb487d","identity":"Version-pinned static review; not latest executable validation","repository_copy":"pending"},
@@ -35,5 +35,7 @@
     "藏火_四案例多轮学习与适配报告.md and its arithmetic attachments"
   ],
   "unlocated_policy": "Conversation-derived summaries are labelled as summaries; missing originals are not fabricated or assigned invented hashes.",
-  "not_completed_this_round": ["Full source and asset import into this repository", "New formation implementation", "Generic settlement-kernel refactoring", "New Godot runtime or gameplay verification", "Original artifact release mirroring"]
+  "not_completed_this_round": ["Full source and asset import into this repository", "New formation implementation", "Generic settlement-kernel refactoring", "New Godot runtime or gameplay verification", "Original artifact release mirroring"],
+  "member_manifest": "migration/research_members.json",
+  "source_migration_blocker": "Authenticated cross-repository import not completed. Two attempted transfer writes were blocked by tool safety checks; unused preparation removed. No source or binary asset import claimed."
 }
