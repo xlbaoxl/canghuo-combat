@@ -1,0 +1,40 @@
+name: Import pinned combat source
+on:
+  push:
+    branches: [chore/complete-combat-migration-20261009]
+    paths: ['.github/combat-source-ticket.json']
+permissions:
+  contents: write
+concurrency:
+  group: combat-source-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download exact source and verify every destination
+        run: python .github/import_combat_source.py
+      - name: Commit source without overwriting concurrent work
+        env:
+          EXPECTED: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          BRANCH=chore/complete-combat-migration-20261009
+          CURRENT=$(git ls-remote origin refs/heads/$BRANCH | cut -f1)
+          test "$CURRENT" = "$EXPECTED"
+          git add modules/training-camp archive/game-e101fca migration/source_manifest.json
+          git rm .github/import_combat_source.py .github/combat-source-ticket.json .github/workflows/import-combat-source.yml
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'chore: migrate exact 3.0.1 combat module and historical design sources'
+          git push origin HEAD:refs/heads/$BRANCH
+          mkdir -p "$RUNNER_TEMP/receipt"
+          cp migration/source_manifest.json "$RUNNER_TEMP/receipt/"
+          git rev-parse HEAD > "$RUNNER_TEMP/receipt/commit.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: combat-source-migration-receipt
+          path: ${{ runner.temp }}/receipt
+          retention-days: 14
