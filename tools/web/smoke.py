@@ -8,34 +8,41 @@ import json
 import os
 from pathlib import Path
 import threading
+import time
 import traceback
 from playwright.sync_api import sync_playwright
 from serve import server
 
 
-def test_web(root: Path, output: Path, executable: str | None = None, headed: bool = False) -> None:
+def test_web(root: Path, output: Path, executable: str | None = None, headed: bool = False, graphics: str = "mesa") -> None:
     output.mkdir(parents=True, exist_ok=True)
     host = server(root)
     thread = threading.Thread(target=host.serve_forever, daemon=True)
     thread.start()
-    url = f'http://127.0.0.1:{host.server_port}/'
+    url = f'http://127.0.0.1:{host.server_port}/?diagnostics=1'
     report = {'scope': 'Real Chromium, exported WebAssembly, software WebGL, physical browser input',
               'url': url, 'checks': [], 'errors': [], 'success': False}
     page = None
     try:
         with sync_playwright() as playwright:
-            options = {'headless': not headed, 'args': ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--disable-dev-shm-usage', '--no-sandbox']}
+            graphics_args = ['--use-gl=angle', '--use-angle=gl', '--ignore-gpu-blocklist'] if graphics == 'mesa' else ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader']
+            options = {'headless': not headed, 'args': graphics_args + ['--disable-dev-shm-usage', '--no-sandbox']}
             if executable:
                 options['executable_path'] = executable
             browser = playwright.chromium.launch(**options)
             report['browser_version'] = browser.version
             report['headed'] = headed
+            report['graphics'] = graphics
+            report['started_monotonic'] = time.monotonic()
             context = browser.new_context(viewport={'width': 1360, 'height': 900}, accept_downloads=True)
             page = context.new_page()
             page.on('pageerror', lambda error: report['errors'].append(str(error)))
             console_messages = []
             def log_console(message):
                 console_messages.append(message.text)
+                if message.text.startswith('CANGHUO_HEARTBEAT '):
+                    report['heartbeat'] = json.loads(message.text[len('CANGHUO_HEARTBEAT '):])
+                    (output / 'last-heartbeat.json').write_text(json.dumps(report['heartbeat'], ensure_ascii=False, indent=2))
                 with (output / 'console.log').open('a', encoding='utf-8') as log:
                     log.write(message.type + ': ' + message.text + '\n')
             page.on('console', log_console)
@@ -47,8 +54,17 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                 if not condition:
                     raise AssertionError(label)
 
+            last_state = {}
+            def trace(label: str, **fields) -> None:
+                record = {'label': label, 'seconds': round(time.monotonic()-report['started_monotonic'], 3), **fields}
+                with (output / 'actions.jsonl').open('a', encoding='utf-8') as log:
+                    log.write(json.dumps(record, ensure_ascii=False) + '\n')
+                print('BROWSER ' + json.dumps(record, ensure_ascii=False), flush=True)
+
             def state() -> dict:
-                return page.evaluate('window.canghuoStatus')
+                nonlocal last_state
+                last_state = page.evaluate('window.canghuoStatus')
+                return last_state
 
             def wait(expression: str, timeout: int = 120000) -> None:
                 try:
@@ -56,19 +72,26 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                 except Exception:
                     # Capture before Playwright tears down the browser on exception.
                     report['wait_failed'] = expression
-                    report['last_status'] = page.evaluate('window.canghuoStatus')
-                    report['runtime_messages'] = page.evaluate('window.canghuoErrors')
-                    page.screenshot(path=str(output / 'failure.png'), timeout=10000)
+                    report['last_status'] = last_state
+                    report['runtime_messages'] = console_messages
+                    (output / 'browser-timeout.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
+                    try:
+                        page.screenshot(path=str(output / 'failure.png'), timeout=5000)
+                    except Exception:
+                        pass
                     raise
 
             def point(x: float, y: float, button: str = 'left') -> None:
+                trace('input_start', x=x, y=y, button=button, heartbeat=report.get('heartbeat'))
                 sample = state().get('sample', 0)
                 rect = page.locator('#canvas').bounding_box()
                 page.mouse.click(rect['x'] + x * rect['width'] / 1280, rect['y'] + y * rect['height'] / 720, button=button)
                 # Wait for subsequent game frames, not an optimistic fixed sleep.
                 wait('s.sample >= ' + str(sample + 2))
+                trace('input_settled', sample=state().get('sample'), fps=state().get('fps'))
 
             def click(key: str) -> None:
+                trace('control', key=key)
                 wait(f's.controls[{json.dumps(key)}] && !s.controls[{json.dumps(key)}].disabled')
                 control = state()['controls'][key]
                 point(control['x'], control['y'])
@@ -82,6 +105,7 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                 check(state()['page'] == 'battle', 'player decision reached')
 
             def capture(name: str) -> None:
+                trace('capture', name=name)
                 # Save state before capture too, so graphics stalls remain diagnosable.
                 (output / (name + '-status.json')).write_text(json.dumps(state(), ensure_ascii=False, indent=2))
                 was_running = state()['page'] == 'battle' and not state()['paused']
@@ -263,6 +287,7 @@ if __name__ == '__main__':
     parser.add_argument('--root', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--chromium', default=os.environ.get('CHROMIUM_EXECUTABLE'))
+    parser.add_argument('--graphics', choices=['mesa', 'swiftshader'], default='mesa')
     parser.add_argument('--headed', action='store_true', help='Use a real X11 browser window (CI runs under Xvfb)')
     arguments = parser.parse_args()
-    test_web(arguments.root.resolve(), arguments.output.resolve(), arguments.chromium, arguments.headed)
+    test_web(arguments.root.resolve(), arguments.output.resolve(), arguments.chromium, arguments.headed, arguments.graphics)

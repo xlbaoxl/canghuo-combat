@@ -24,11 +24,17 @@ $GODOT_HEAD_INCLUDE
 'use strict';
 const $=id=>document.getElementById(id), canvas=$('canvas');
 let loadedMeta=null, reportData='', reportName='canghuo-review.json', running=false;
+const diagnostics=new URLSearchParams(location.search).has('diagnostics');
+let lastHeartbeat=0;
 window.canghuoErrors=[];
 window.CanghuoWeb={
  requestReport:null,
  receiveStatus(raw){
   const s=JSON.parse(raw); window.canghuoStatus=s;
+  if(diagnostics && performance.now()-lastHeartbeat>=1000){
+   lastHeartbeat=performance.now();
+   console.debug('CANGHUO_HEARTBEAT '+JSON.stringify({sample:s.sample,fps:s.fps,page:s.page,paused:s.paused,thinking:s.thinking,player_ready:s.player_ready,window_id:s.window_id,current:s.current,phase:s.phase,event_count:s.event_count,event_cursor:s.event_cursor,playback_wait:s.playback_wait}));
+  }
   if(!loadedMeta){loadedMeta=s.build; $('version').textContent=`${s.build.version} · ${s.build.commit.slice(0,8)}`;}
   $('feedback').disabled=false;
   if(!s.persistent)$('storage').textContent='浏览器未提供持久存储；关闭页面后配装可能丢失，请保留诊断记录。';

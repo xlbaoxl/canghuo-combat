@@ -83,7 +83,7 @@ func _publish_web_status() -> void:
 	# Read-only observation for diagnostics and real browser-input tests. No mutation API.
 	web_status_serial += 1
 	var info: Dictionary = {
-		"sample": web_status_serial,
+		"sample": web_status_serial, "fps": Engine.get_frames_per_second(),
 		"page": page, "character": char_id, "growth_profile": growth_profile,
 		"slots": slots, "build": web_meta, "persistent": OS.is_userfs_persistent(),
 		"paused": paused, "autoplay": autoplay, "speed": speed, "thinking": thinking(),
@@ -103,6 +103,10 @@ func _publish_web_status() -> void:
 		info.result = battle.state.result
 		info.reason = battle.state.reason
 		info.event_count = battle.events.size()
+		info.event_cursor = event_cursor
+		info.playback_wait = playback_wait
+		info.current = battle.state.current
+		info.phase = battle.state.phase
 		info.window_id = battle.state.window_id
 		info.window_kind = battle.state.window_kind
 		info.player_ready = page == "battle" and modal == null and not paused and not thinking() and event_cursor >= battle.events.size() and playback_wait <= 0 and battle.state.current == "p" and battle.state.phase == "DECISION" and not battle.state.ended
