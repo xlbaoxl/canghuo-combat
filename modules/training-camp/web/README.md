@@ -2,6 +2,8 @@
 
 本目录是现有训练营的浏览器适配层，不是第二套战斗实现。当前完成程度、真实运行证据与未完成项见[网页实施记录](WEB_STATUS.md)。**构建成功、浏览器回归成功、托管发布成功、作者试玩认可，是四件不同的事。**
 
+**网页版作者无需寻找 ChatGPT 授权弹窗。**现在优先使用 Vercel 自己的 GitHub 集成，具体一次性操作见[网页托管连接](../../../docs/网页托管连接.md)。不需要本地安装、下载工程或在聊天中提供令牌。
+
 ## 架构与不变边界
 
 `tools/web/build.py` 将 `modules/training-camp/project` 复制到临时构建目录；只替换该副本的主场景、渲染配置与导出预设。仓库中的桌面工程不变。浏览器 `main.gd` 继承原控制器；人物、技能、法宝、数值、执行器和 AI 全部使用原文件。构建前后核对文件指纹，只允许 staging 中的 `project.godot` 和 `export_presets.cfg` 两项原文件不同。
@@ -36,16 +38,20 @@ LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1600x1000x24' python tools/web
 
 构建输出目录必须不存在；不会覆盖其他源码或已有构建。`tools/web/serve.py` 仅供回环地址自动测试，不是生产服务器。
 
-## 托管一次性配置与发布边界
+## 首选托管方式：Vercel 原生 Git 集成
 
-目标是 Vercel 上的固定受保护试玩入口。此前考虑的 Cloudflare Pages 单文件 25 MiB 限制小于首轮导出的两项主要资源（PCK 约 36 MB、WASM 约 39 MB），因此不直接采用该方案。具体托管配额及访问权限应在首次连接时再次核验。
+作者在 ChatGPT 网页版没有看到授权卡片，因此不再把 ChatGPT 的 Vercel 插件当作发布前置。使用已有 GitHub 连接维护代码和经过测试的发布分支；作者在 Vercel 普通网页完成一次 GitHub 仓库连接和访问保护设置即可。详细步骤见[网页托管连接](../../../docs/网页托管连接.md)。
 
-**未连接账号不等于已经部署。**首次需要作者授权托管账号，然后由开发端建立/选择专用项目，确认全部部署（包括正式域名）受 Vercel Authentication 保护。仓库私有、`robots.txt` 或难猜网址都不是网站访问控制。浏览器必须能下载游戏运行资源，因此获准试玩者仍可取得发布资源，不能将客户端代码视作服务器秘密。
+`web-site-sync.yml` 只取本仓 main 当前提交的成功 Web 工作流产物，重新核对构建身份、验收记录和文件指纹，将运行包更新到同仓私有 `web-playtest-site` 分支。只对这个带专用标记的生成分支作普通提交与推送；未识别文件、符号链接、失败/过时/PR/fork产物都会阻止覆盖。不强推或重置历史，不将该分支合入 main。它不是新的战斗源码维护仓库。
 
-发布脚本 `tools/web/deploy_vercel.py` 已提供，但托管 API 的真实端到端联调必须在账号连接后完成。脚本先检查同一提交的规则与浏览器证据、每份运行文件的 SHA256、已有项目身份及 `ssoProtection.deploymentType=all`，不满足则停止且不上传。只上传白名单运行文件，不上传仓库源码、研究材料、测试证据或访问令牌，不自动创建项目或关闭保护。
+Vercel 连接前，主分支 `vercel.json` 仅允许输出一张不含游戏资源的设置页；先设置 **Vercel Authentication → All Deployments**，再把生产分支设为 `web-playtest-site`。该分支的静态输出为 `public`，带有 Web AI 线程需要的 COOP/COEP 响应头。Git 模式不需要 Vercel API token；网页是否实际受保护、是否可玩仍要在真实 URL 上验收，不能用私有仓库或同步绿灯代替。
 
-GitHub 配置使用 Secret `VERCEL_TOKEN`、Variables `VERCEL_PROJECT_ID`（已有 `prj_...` 标识）、可选 `VERCEL_TEAM_ID`，以及显式开关 `WEB_DEPLOY_ENABLED=true`。**不要把 token 发到聊天、提交到仓库或写入网页。**首次配置由开发端处理账号允许的部分，不能把缺少发布授权伪装成代码错误。本轮不会自动打开开关。
+## 可选方式：基于 Vercel API 的受保护发布器
 
-开启后，只有 `main` 的通过版本可触发正式发布；PR 不读取发布凭据，也不覆盖稳定入口。脚本返回 READY 只代表托管平台报告就绪，仍需登录后的真实 HTTPS 访问，检查响应头、版本、一次完整战斗、保存和反馈。发布结果明确记录 `public_http_and_browser_verified=false`，未做此项时不能声称正式网址已验收。后续实验分支预览/线上冒烟门禁属于下一项扩展，不用假网址冒充现成入口。
+原 `tools/web/deploy_vercel.py` 保留，默认不开启。它先检查同一提交的规则与浏览器证据、每份运行文件 SHA256、已有项目身份及 `ssoProtection.deploymentType=all`，不满足则停止且不上传。不自动创建项目或关闭保护。
 
-官方依据：[Godot Web 导出](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html)、[JavaScriptBridge](https://docs.godotengine.org/en/stable/classes/class_javascriptbridge.html)、[Vercel 项目读取](https://vercel.com/docs/rest-api/projects/find-a-project-by-id-or-name)、[文件上传](https://vercel.com/docs/rest-api/deployments/upload-deployment-files)、[部署创建](https://vercel.com/docs/rest-api/deployments/create-a-new-deployment)。
+此可选模式使用 Secret `VERCEL_TOKEN`、Variables `VERCEL_PROJECT_ID`、可选 `VERCEL_TEAM_ID` 和开关 `WEB_DEPLOY_ENABLED=true`。**首选 Git 模式不需要这些配置；不要同时开启两个发布通道，不要把 token 发到聊天或写入网页。**
+
+无论哪条路径，构建/分支同步/托管 READY 都不等于线上试玩已验收。需要实际 HTTPS 网址、访问保护、响应头、版本、完整战斗、保存和反馈检查。获准试玩者仍能下载游戏运行资源，不能把客户端资源视作服务器秘密。Cloudflare Pages 首轮 25 MiB 单文件限制小于本工程主要资源，因此没有直接改用它。
+
+官方依据：[Godot Web 导出](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html)、[JavaScriptBridge](https://docs.godotengine.org/en/stable/classes/class_javascriptbridge.html)、[Vercel Git 集成](https://vercel.com/docs/git)、[Vercel 访问保护](https://vercel.com/docs/deployment-protection)。
