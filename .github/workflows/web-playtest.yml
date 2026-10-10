@@ -1,0 +1,26 @@
+name: Web playtest
+on:
+  push:
+    branches: [feat/web-playtest-20261010]
+    paths: ['.github/workflows/web-playtest.yml']
+permissions:
+  contents: read
+jobs:
+  source-checkout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Package this exact source for port verification
+        run: |
+          mkdir -p "$RUNNER_TEMP/web-source"
+          git archive --format=tar HEAD > "$RUNNER_TEMP/web-source/source.tar"
+          git rev-parse HEAD > "$RUNNER_TEMP/web-source/commit.txt"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: web-source-checkout
+          path: ${{ runner.temp }}/web-source
+          retention-days: 1
+          if-no-files-found: error
