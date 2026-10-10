@@ -2,9 +2,9 @@ name: Web playtest
 on:
   push:
     branches: [main]
-    paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_*.py', '.github/workflows/web-playtest.yml', 'vercel.json']
+    paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_*.py', '.github/workflows/web-playtest.yml']
   pull_request:
-    paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_*.py', '.github/workflows/web-playtest.yml', 'vercel.json']
+    paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_*.py', '.github/workflows/web-playtest.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -14,7 +14,7 @@ concurrency:
 jobs:
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -32,37 +32,28 @@ jobs:
           python -m pip install 'playwright==1.63.0'
           python -m playwright install --with-deps chromium
           sudo apt-get install -y xvfb libgl1-mesa-dri
-      - name: Exercise the released WASM in a real browser
+      - name: Original browser regression before Pages adaptation
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
         run: timeout --kill-after=10s 600 xvfb-run -a -s '-screen 0 1600x1000x24' python tools/web/smoke.py --headed --graphics mesa --root "$RUNNER_TEMP/web-release" --output "$RUNNER_TEMP/web-browser-evidence"
-      - name: Verify source stayed unchanged
-        run: git diff --exit-code -- modules/training-camp/project
-      - name: Validate the exact upload package without credentials or network writes
-        run: |
-          PYTHONPATH=tools/web python - <<'PY'
-          import json, os
-          from pathlib import Path
-          from deploy_vercel import verified_files
-          root = Path(os.environ['RUNNER_TEMP'])
-          meta, files = verified_files(root / 'web-release', root / 'web-browser-evidence/browser-checks.json', root / 'web-release-evidence/build-result.json', os.environ['GITHUB_SHA'])
-          assert 'index.storage.js' in files, 'Missing browser persistence observer'
-          assert 'src="index.storage.js"' in files['index.html'].decode('utf-8'), 'HTML helper reference mismatch'
-          receipt = {'commit': meta['commit'], 'verified_for_upload': True, 'files': sorted(files), 'bytes': sum(map(len, files.values())), 'network_writes': False, 'hosting_deployed': False}
-          (root / 'web-release-evidence/upload-package.json').write_text(json.dumps(receipt, indent=2) + '\n')
-          print(json.dumps(receipt, indent=2))
-          PY
-      - name: Deploy verified release to the connected protected project
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.WEB_DEPLOY_ENABLED == 'true'
+      - name: Prepare the same game for headerless GitHub Pages
+        run: python tools/web/pages.py --root "$RUNNER_TEMP/web-release" --evidence "$RUNNER_TEMP/web-release-evidence"
+      - name: Verify actual Pages bundle on a headerless project subpath
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
-          VERCEL_TEAM_ID: ${{ vars.VERCEL_TEAM_ID }}
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: timeout --kill-after=10s 750 xvfb-run -a -s '-screen 0 1600x1000x24' python tools/web/pages_smoke.py --root "$RUNNER_TEMP/web-release" --output "$RUNNER_TEMP/pages-browser-evidence"
+      - name: Verify source stayed unchanged and exact publication bytes
         run: |
-          python tools/web/deploy_vercel.py --root "$RUNNER_TEMP/web-release" --browser-report "$RUNNER_TEMP/web-browser-evidence/browser-checks.json" --build-report "$RUNNER_TEMP/web-release-evidence/build-result.json" --commit "$GITHUB_SHA" --production --output "$RUNNER_TEMP/web-release-evidence/deployment.json"
-      - name: Explain the deployment gate
-        if: github.ref == 'refs/heads/main' && vars.WEB_DEPLOY_ENABLED != 'true'
-        run: echo 'Web build and browser verification finished. Hosting is not enabled; no live URL is claimed.' >> "$GITHUB_STEP_SUMMARY"
+          git diff --exit-code -- modules/training-camp/project
+          python - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'tools/web')
+          from deploy_vercel import verified_files
+          temp = Path(os.environ['RUNNER_TEMP'])
+          meta, files = verified_files(temp/'web-release', temp/'pages-browser-evidence/browser-checks.json', temp/'web-release-evidence/build-result.json', os.environ['GITHUB_SHA'])
+          (temp/'web-release-evidence/pages-package.json').write_text(json.dumps({'commit':meta['commit'],'files':sorted(files),'network_writes':False,'hosting_deployed':False},indent=2))
+          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
@@ -70,7 +61,7 @@ jobs:
           path: |
             ${{ runner.temp }}/web-release-evidence
             ${{ runner.temp }}/web-browser-evidence
-            ${{ runner.temp }}/web-godot/receipt.json
+            ${{ runner.temp }}/pages-browser-evidence
           retention-days: 14
           if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -86,3 +77,55 @@ jobs:
           path: ${{ runner.temp }}/web-release
           retention-days: 2
           if-no-files-found: ignore
+  pages:
+    if: github.repository == 'xlbaoxl/canghuo-combat' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && github.event.repository.private == false
+    needs: browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+        with:
+          enablement: true
+      - name: Download the exact tested runtime
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: web-playable-release
+          path: ${{ runner.temp }}/pages-runtime
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: ${{ runner.temp }}/pages-runtime
+      - name: Deploy verified game
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
+      - name: Install browser for actual public URL validation
+        run: |
+          python -m pip install 'playwright==1.63.0'
+          python -m playwright install --with-deps chromium
+          sudo apt-get install -y xvfb libgl1-mesa-dri
+      - name: Play the actual HTTPS Pages release
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: timeout --kill-after=10s 900 xvfb-run -a -s '-screen 0 1600x1000x24' python tools/web/pages_smoke.py --url "$PAGE_URL" --expected-commit "$GITHUB_SHA" --output "$RUNNER_TEMP/pages-live-evidence"
+      - name: Preserve actual hosting evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pages-live-verification
+          path: ${{ runner.temp }}/pages-live-evidence
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Explain first-time Pages setup on failure
+        if: failure()
+        run: echo 'If Configure GitHub Pages failed, open this repository Settings > Pages > Build and deployment > Source, select GitHub Actions, then re-run the failed pages job. No Vercel account or token is needed. A successful deployment still needs the public browser check above.' >> "$GITHUB_STEP_SUMMARY"
