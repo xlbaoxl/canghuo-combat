@@ -6,6 +6,7 @@ var web_status_serial: int = 0
 var web_commands: Array = []
 var web_input_start: int = 0
 var web_report_callback
+var web_save_check: Dictionary = {}
 
 func _ready() -> void:
 	var parsed = JSON.parse_string(FileAccess.get_file_as_string("res://web/build.json"))
@@ -28,7 +29,15 @@ func save_settings() -> void:
 	if bridge == null: return
 	var raw: String = FileAccess.get_file_as_string(SAVE)
 	var saved = JSON.parse_string(raw)
-	if not saved is Dictionary or saved.get("character", "") != char_id or saved.get("growth_profile", "") != growth_profile or saved.get("snapshot", {}) != snapshot or saved.get("slots", []) != slots or saved.get("artifacts", []) != artifacts:
+	# JSON round-trips numbers as floats. Compare equally normalized snapshots,
+	# not an in-memory integer dictionary against a parsed JSON dictionary.
+	var expected_snapshot = JSON.parse_string(JSON.stringify(snapshot))
+	web_save_check = {"path": ProjectSettings.globalize_path(SAVE), "bytes": raw.to_utf8_buffer().size(), "expected_character": char_id, "expected_growth_profile": growth_profile, "parsed": saved is Dictionary}
+	if saved is Dictionary:
+		web_save_check.character = saved.get("character", "")
+		web_save_check.growth_profile = saved.get("growth_profile", "")
+		web_save_check.snapshot_matches = saved.get("snapshot", {}) == expected_snapshot
+	if not saved is Dictionary or saved.get("character", "") != char_id or saved.get("growth_profile", "") != growth_profile or saved.get("snapshot", {}) != expected_snapshot or saved.get("slots", []) != slots or saved.get("artifacts", []) != artifacts:
 		bridge.saveFailed("本次配置未正确写入引擎文件；请保留诊断记录")
 		return
 	# This requests an asynchronous flush, not proof that IndexedDB has committed.
@@ -76,6 +85,7 @@ func export_web_review() -> void:
 		"content": catalog.data.version, "content_digest": catalog.digest,
 		"page": page, "snapshot": snapshot, "human_commands": web_commands,
 		"inputs": inputs.slice(web_input_start), "events": [], "AI": [],
+		"save_check": web_save_check,
 		"replay_guaranteed": false,
 		"replay_note": "诊断记录；包含人类已接受指令，但尚未验证完整AI指令重放。"
 	}
@@ -99,7 +109,7 @@ func _publish_web_status() -> void:
 		"slots": slots, "build": web_meta, "persistent": OS.is_userfs_persistent(),
 		"paused": paused, "autoplay": autoplay, "speed": speed, "thinking": thinking(),
 		"modal": modal != null, "controls": {}, "selected_action": selected_action,
-		"snapshot": snapshot, "player_ready": false
+		"snapshot": snapshot, "player_ready": false, "save_check": web_save_check
 	}
 	for key in controls:
 		var control = controls[key]

@@ -93,9 +93,9 @@ def build(engine: Path, output: Path, debug: bool = False, verify: bool = False)
         run(base + ['--export-debug' if debug else '--export-release', 'Training Web', str(output / 'index.html')], logs / 'export.log', env)
     if fingerprints(SOURCE) != before:
         raise RuntimeError('Web build modified the authoritative source')
-    # The shell's read-only durability observer runs outside the WASM package.
-    shutil.copyfile(ADAPTER / 'storage.js', output / 'storage.js')
-    for required in ('index.html', 'index.js', 'index.wasm', 'index.pck', 'storage.js'):
+    # The helper follows the runtime-only index.* publication allowlist.
+    shutil.copyfile(ADAPTER / 'storage.js', output / 'index.storage.js')
+    for required in ('index.html', 'index.js', 'index.wasm', 'index.pck', 'index.storage.js'):
         if not (output / required).is_file() or not (output / required).stat().st_size:
             raise RuntimeError('Missing Web export: ' + required)
     metadata['files'] = {p.name: {'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}

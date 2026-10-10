@@ -26,7 +26,7 @@ class FakeClient:
 class WebDeployTest(unittest.TestCase):
     def fixture(self, root):
         files = {}
-        for name in ['index.html', 'index.js', 'index.wasm', 'index.pck']:
+        for name in ['index.html', 'index.js', 'index.wasm', 'index.pck', 'index.storage.js']:
             data = ('test-' + name).encode()
             (root / name).write_bytes(data)
             files[name] = {'bytes': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
@@ -48,6 +48,7 @@ class WebDeployTest(unittest.TestCase):
             meta, files = self.verify(root)
             self.assertNotIn('private-design.md', files)
             self.assertNotIn('browser.json', files)
+            self.assertIn('index.storage.js', files)
             config = json.loads(files['vercel.json'])
             self.assertIn({'key': 'Cross-Origin-Embedder-Policy', 'value': 'require-corp'}, config['headers'][0]['headers'])
             client = FakeClient()
@@ -83,7 +84,7 @@ class WebDeployTest(unittest.TestCase):
                 self.verify(root)
 
     def test_path_escape_and_symlink_rejected(self):
-        for name in ['../secret', 'code.gd', 'index.gd']:
+        for name in ['../secret', 'code.gd', 'index.gd', 'storage.js']:
             with tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 meta, _, _ = self.fixture(root)
