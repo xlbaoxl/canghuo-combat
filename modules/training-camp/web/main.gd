@@ -2,6 +2,7 @@ extends "res://scripts/main.gd"
 ## Browser I/O only. The inherited controller, executor and AI remain authoritative.
 var web_meta: Dictionary = {}
 var web_elapsed: float = 0.0
+var web_status_serial: int = 0
 var web_commands: Array = []
 var web_input_start: int = 0
 var web_report_callback
@@ -28,6 +29,15 @@ func start_snapshot() -> void:
 	web_commands = []
 	web_input_start = inputs.size()
 	super.start_snapshot()
+	if OS.has_feature("web") and is_instance_valid(stage):
+		# Keep the same scene and assets; avoid an extra multisample resolve on WebGL.
+		stage.viewport.msaa_3d = Viewport.MSAA_DISABLED
+
+func toggle_pause() -> void:
+	super.toggle_pause()
+	if OS.has_feature("web") and is_instance_valid(stage):
+		# A paused diorama does not need to redraw its full 3D scene every frame.
+		stage.viewport.render_target_update_mode = SubViewport.UPDATE_ONCE if paused else SubViewport.UPDATE_ALWAYS
 
 func submit(action: Dictionary) -> void:
 	var before: String = battle.public_hash() if battle != null else ""
@@ -71,7 +81,9 @@ func export_web_review() -> void:
 
 func _publish_web_status() -> void:
 	# Read-only observation for diagnostics and real browser-input tests. No mutation API.
+	web_status_serial += 1
 	var info: Dictionary = {
+		"sample": web_status_serial,
 		"page": page, "character": char_id, "growth_profile": growth_profile,
 		"slots": slots, "build": web_meta, "persistent": OS.is_userfs_persistent(),
 		"paused": paused, "autoplay": autoplay, "speed": speed, "thinking": thinking(),

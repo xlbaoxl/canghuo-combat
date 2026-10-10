@@ -1,7 +1,7 @@
 name: Web playtest
 on:
   push:
-    branches: [main, feat/web-playtest-20261010]
+    branches: [main]
     paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_*.py', '.github/workflows/web-playtest.yml', 'vercel.json']
   pull_request:
     paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_*.py', '.github/workflows/web-playtest.yml', 'vercel.json']
@@ -29,10 +29,10 @@ jobs:
         run: python tools/web/build.py --engine "$RUNNER_TEMP/web-godot/godot" --output "$RUNNER_TEMP/web-release" --verify
       - name: Install pinned browser test runner
         run: |
-          python -m pip install 'playwright==1.55.0'
+          python -m pip install 'playwright==1.63.0'
           python -m playwright install --with-deps chromium
       - name: Exercise the released WASM in a real browser
-        run: xvfb-run -a python tools/web/smoke.py --headed --root "$RUNNER_TEMP/web-release" --output "$RUNNER_TEMP/web-browser-evidence"
+        run: timeout --kill-after=10s 600 xvfb-run -a -s '-screen 0 1600x1000x24' python tools/web/smoke.py --headed --root "$RUNNER_TEMP/web-release" --output "$RUNNER_TEMP/web-browser-evidence"
       - name: Verify source stayed unchanged
         run: git diff --exit-code -- modules/training-camp/project
       - name: Deploy verified release to the connected protected project

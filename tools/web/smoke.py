@@ -28,6 +28,8 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
             if executable:
                 options['executable_path'] = executable
             browser = playwright.chromium.launch(**options)
+            report['browser_version'] = browser.version
+            report['headed'] = headed
             context = browser.new_context(viewport={'width': 1360, 'height': 900}, accept_downloads=True)
             page = context.new_page()
             page.on('pageerror', lambda error: report['errors'].append(str(error)))
@@ -41,6 +43,7 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
             def check(condition: bool, label: str) -> None:
                 report['checks'].append({'label': label, 'pass': bool(condition)})
                 print(('PASS ' if condition else 'FAIL ') + label, flush=True)
+                (output / 'browser-progress.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
                 if not condition:
                     raise AssertionError(label)
 
@@ -59,9 +62,11 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                     raise
 
             def point(x: float, y: float, button: str = 'left') -> None:
+                sample = state().get('sample', 0)
                 rect = page.locator('#canvas').bounding_box()
                 page.mouse.click(rect['x'] + x * rect['width'] / 1280, rect['y'] + y * rect['height'] / 720, button=button)
-                page.wait_for_timeout(250)
+                # Wait for subsequent game frames, not an optimistic fixed sleep.
+                wait('s.sample >= ' + str(sample + 2))
 
             def click(key: str) -> None:
                 wait(f's.controls[{json.dumps(key)}] && !s.controls[{json.dumps(key)}].disabled')
@@ -130,6 +135,12 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
             baseline_hash = state()['hash']
             click('passive_1')
             check(not state()['selected_action'] and state()['hash'] == baseline_hash, 'automatic artifact icon cannot cast')
+            page.locator('#canvas').focus()
+            page.keyboard.press('1')
+            wait('s.selected_action.kind === "cast" && s.selected_action.slot === 0')
+            point(1035, 540, 'right')
+            wait('Object.keys(s.selected_action).length === 0')
+            check(state()['hash'] == baseline_hash, 'keyboard skill selection and cancellation do not spend resources')
             click('active_1')
             wait('s.selected_action.kind === "artifact"')
             point(1035, 540, 'right')
