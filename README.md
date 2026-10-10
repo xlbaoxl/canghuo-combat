@@ -4,7 +4,7 @@
 
 ## 网页试玩建设
 
-正在将同一个训练营工程适配为电脑浏览器版，不另写一套战斗规则。网页入口、保存/反馈、真实浏览器验证和发布门禁见[网页训练营](modules/training-camp/web/README.md)与[逐轮实施记录](modules/training-camp/web/WEB_STATUS.md)。**当前没有已验收的线上试玩网址；托管账号尚待连接，不能把导出文件当成网站已经发布。**
+同一个训练营工程已增加电脑浏览器版，真实 Web 导出和 Chromium/Mesa 核心试玩回归已通过，不另写一套战斗规则。网页入口、保存/反馈、真实浏览器验证和发布门禁见[网页训练营](modules/training-camp/web/README.md)与[逐轮实施记录](modules/training-camp/web/WEB_STATUS.md)。**当前没有已验收的线上试玩网址；托管账号尚待连接，不能把导出文件当成网站已经发布。**
 
 ## 工程入口
 
