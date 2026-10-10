@@ -13,7 +13,7 @@ from playwright.sync_api import sync_playwright
 from serve import server
 
 
-def test_web(root: Path, output: Path, executable: str | None = None) -> None:
+def test_web(root: Path, output: Path, executable: str | None = None, headed: bool = False) -> None:
     output.mkdir(parents=True, exist_ok=True)
     host = server(root)
     thread = threading.Thread(target=host.serve_forever, daemon=True)
@@ -24,14 +24,19 @@ def test_web(root: Path, output: Path, executable: str | None = None) -> None:
     page = None
     try:
         with sync_playwright() as playwright:
-            options = {'headless': True, 'args': ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--disable-dev-shm-usage', '--no-sandbox']}
+            options = {'headless': not headed, 'args': ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--disable-dev-shm-usage', '--no-sandbox']}
             if executable:
                 options['executable_path'] = executable
             browser = playwright.chromium.launch(**options)
             context = browser.new_context(viewport={'width': 1360, 'height': 900}, accept_downloads=True)
             page = context.new_page()
             page.on('pageerror', lambda error: report['errors'].append(str(error)))
-            page.on('console', lambda message: (output / 'console.log').open('a', encoding='utf-8').write(message.type + ': ' + message.text + '\n'))
+            console_messages = []
+            def log_console(message):
+                console_messages.append(message.text)
+                with (output / 'console.log').open('a', encoding='utf-8') as log:
+                    log.write(message.type + ': ' + message.text + '\n')
+            page.on('console', log_console)
 
             def check(condition: bool, label: str) -> None:
                 report['checks'].append({'label': label, 'pass': bool(condition)})
@@ -72,7 +77,18 @@ def test_web(root: Path, output: Path, executable: str | None = None) -> None:
                 check(state()['page'] == 'battle', 'player decision reached')
 
             def capture(name: str) -> None:
-                page.screenshot(path=str(output / (name + '.png')), full_page=True)
+                # Save state before capture too, so graphics stalls remain diagnosable.
+                (output / (name + '-status.json')).write_text(json.dumps(state(), ensure_ascii=False, indent=2))
+                was_running = state()['page'] == 'battle' and not state()['paused']
+                if was_running:
+                    click('pause')
+                    wait('s.paused')
+                try:
+                    page.screenshot(path=str(output / (name + '.png')), full_page=False, timeout=60000)
+                finally:
+                    if was_running:
+                        click('pause')
+                        wait('!s.paused')
 
             def speed_zero() -> None:
                 for _ in range(3):
@@ -211,7 +227,7 @@ def test_web(root: Path, output: Path, executable: str | None = None) -> None:
                 bad_page.close()
                 broken.shutdown()
                 broken.server_close()
-            runtime_errors = page.evaluate('window.canghuoErrors')
+            runtime_errors = console_messages + page.evaluate('window.canghuoErrors')
             report['runtime_messages'] = runtime_errors
             fatal = [message for message in runtime_errors if any(marker in message for marker in ('SCRIPT ERROR', 'Parse Error', 'RuntimeError', 'Aborted(', 'out of bounds', 'AI illegal'))]
             check(not fatal and not report['errors'], 'no script, WASM or browser exceptions')
@@ -236,5 +252,6 @@ if __name__ == '__main__':
     parser.add_argument('--root', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--chromium', default=os.environ.get('CHROMIUM_EXECUTABLE'))
+    parser.add_argument('--headed', action='store_true', help='Use a real X11 browser window (CI runs under Xvfb)')
     arguments = parser.parse_args()
-    test_web(arguments.root.resolve(), arguments.output.resolve(), arguments.chromium)
+    test_web(arguments.root.resolve(), arguments.output.resolve(), arguments.chromium, arguments.headed)

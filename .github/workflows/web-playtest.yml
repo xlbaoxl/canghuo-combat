@@ -2,9 +2,9 @@ name: Web playtest
 on:
   push:
     branches: [main, feat/web-playtest-20261010]
-    paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_build.py', '.github/workflows/web-playtest.yml', 'vercel.json']
+    paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_*.py', '.github/workflows/web-playtest.yml', 'vercel.json']
   pull_request:
-    paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_build.py', '.github/workflows/web-playtest.yml', 'vercel.json']
+    paths: ['modules/training-camp/**', 'tools/web/**', 'tools/tests/test_web_*.py', '.github/workflows/web-playtest.yml', 'vercel.json']
   workflow_dispatch:
 permissions:
   contents: read
@@ -32,9 +32,20 @@ jobs:
           python -m pip install 'playwright==1.55.0'
           python -m playwright install --with-deps chromium
       - name: Exercise the released WASM in a real browser
-        run: python tools/web/smoke.py --root "$RUNNER_TEMP/web-release" --output "$RUNNER_TEMP/web-browser-evidence"
+        run: xvfb-run -a python tools/web/smoke.py --headed --root "$RUNNER_TEMP/web-release" --output "$RUNNER_TEMP/web-browser-evidence"
       - name: Verify source stayed unchanged
         run: git diff --exit-code -- modules/training-camp/project
+      - name: Deploy verified release to the connected protected project
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.WEB_DEPLOY_ENABLED == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+          VERCEL_TEAM_ID: ${{ vars.VERCEL_TEAM_ID }}
+        run: |
+          python tools/web/deploy_vercel.py --root "$RUNNER_TEMP/web-release" --browser-report "$RUNNER_TEMP/web-browser-evidence/browser-checks.json" --build-report "$RUNNER_TEMP/web-release-evidence/build-result.json" --commit "$GITHUB_SHA" --production --output "$RUNNER_TEMP/web-release-evidence/deployment.json"
+      - name: Explain the deployment gate
+        if: github.ref == 'refs/heads/main' && vars.WEB_DEPLOY_ENABLED != 'true'
+        run: echo 'Web build and browser verification finished. Hosting is not enabled; no live URL is claimed.' >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
