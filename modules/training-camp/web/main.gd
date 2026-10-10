@@ -23,7 +23,18 @@ func button(text: String, rect: Rect2, callback: Callable, key: String = "", par
 
 func save_settings() -> void:
 	super.save_settings()
-	if OS.has_feature("web"): JavaScriptBridge.force_fs_sync()
+	if not OS.has_feature("web"): return
+	var bridge = JavaScriptBridge.get_interface("CanghuoWeb")
+	if bridge == null: return
+	var raw: String = FileAccess.get_file_as_string(SAVE)
+	var saved = JSON.parse_string(raw)
+	if not saved is Dictionary or saved.get("character", "") != char_id or saved.get("growth_profile", "") != growth_profile or saved.get("snapshot", {}) != snapshot or saved.get("slots", []) != slots or saved.get("artifacts", []) != artifacts:
+		bridge.saveFailed("本次配置未正确写入引擎文件；请保留诊断记录")
+		return
+	# This requests an asynchronous flush, not proof that IndexedDB has committed.
+	JavaScriptBridge.force_fs_sync()
+	# The page independently reads back the existing IDBFS record before saying saved.
+	bridge.receiveSave(raw, ProjectSettings.globalize_path(SAVE))
 
 func start_snapshot() -> void:
 	web_commands = []

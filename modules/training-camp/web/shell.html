@@ -17,8 +17,9 @@ $GODOT_HEAD_INCLUDE
 <header><strong>藏火 · 在线战斗训练营</strong><span id="version">版本读取中</span><button id="feedback" disabled>反馈本场问题</button><button id="fullscreen">全屏</button></header>
 <div id="update" hidden>检测到新版本。当前对局不会自动刷新。<button id="reload">结束本场并载入新版</button></div>
 <main id="frame"><canvas id="canvas" width="1280" height="720" tabindex="0" aria-label="藏火战斗训练营游戏画面">浏览器需要支持 WebGL 2。</canvas><section id="cover"><h1>战斗训练营</h1><div id="message" role="status">电脑浏览器试玩。首次进入需要加载游戏资源。</div><progress id="progress" hidden></progress><button id="play">进入训练营</button></section></main>
-<footer><span>1–4 选技能，再点目标确认；右键取消；空格结束窗口。</span><span id="storage">配装保存在当前浏览器；清理网站数据或隐私模式可能丢失。刷新将结束当前对局。</span></footer>
+<footer><span>1–4 选技能，再点目标确认；右键取消；空格结束窗口。</span><span id="storage" role="status">开战时保存本次配置；清理网站数据或隐私模式可能丢失。刷新将结束当前对局。</span></footer>
 <dialog id="report"><h2>反馈本场问题</h2><p>在摘要后补充：你做了什么、实际发生了什么、期望是什么。</p><textarea id="summary" aria-label="反馈摘要"></textarea><div class="actions"><button id="copy">复制摘要</button><button id="download">下载完整诊断</button><button id="close-report">返回试玩</button></div><p id="feedback-note">诊断只在此浏览器生成，不会自动上传。摘要可直接发到讨论中。</p></dialog>
+<script src="storage.js"></script>
 <script src="$GODOT_URL"></script>
 <script>
 'use strict';
@@ -27,21 +28,32 @@ let loadedMeta=null, reportData='', reportName='canghuo-review.json', running=fa
 const diagnostics=new URLSearchParams(location.search).has('diagnostics');
 let lastHeartbeat=0;
 window.canghuoErrors=[];
+const storageMonitor=CanghuoStorage.createMonitor(CanghuoStorage.readPersisted, s=>{
+ window.canghuoSaveStatus=s;
+ if(s.state==='pending')$('storage').textContent='正在确认配置已保存，请勿立即刷新或关闭页面…';
+ else if(s.state==='saved')$('storage').textContent='本次配置已保存到此浏览器。清理网站数据可能丢失；刷新仍会结束当前对局。';
+ else if(s.state==='error')$('storage').textContent='保存未确认：'+s.error;
+ if(diagnostics)console.debug('CANGHUO_SAVE '+JSON.stringify(s));
+});
+window.canghuoSaveStatus=storageMonitor.getStatus();
 window.CanghuoWeb={
  requestReport:null,
+ receiveSave(raw,path){void storageMonitor.request(raw,path);},
+ saveFailed(error){storageMonitor.fail(error);},
  receiveStatus(raw){
   const s=JSON.parse(raw); window.canghuoStatus=s;
   if(diagnostics && performance.now()-lastHeartbeat>=1000){
    lastHeartbeat=performance.now();
-   console.debug('CANGHUO_HEARTBEAT '+JSON.stringify({sample:s.sample,fps:s.fps,page:s.page,paused:s.paused,thinking:s.thinking,player_ready:s.player_ready,window_id:s.window_id,current:s.current,phase:s.phase,event_count:s.event_count,event_cursor:s.event_cursor,playback_wait:s.playback_wait}));
+   console.debug('CANGHUO_HEARTBEAT '+JSON.stringify({sample:s.sample,fps:s.fps,page:s.page,character:s.character,growth_profile:s.growth_profile,paused:s.paused,thinking:s.thinking,player_ready:s.player_ready,window_id:s.window_id,current:s.current,phase:s.phase,event_count:s.event_count,event_cursor:s.event_cursor,playback_wait:s.playback_wait}));
   }
   if(!loadedMeta){loadedMeta=s.build; $('version').textContent=`${s.build.version} · ${s.build.commit.slice(0,8)}`;}
   $('feedback').disabled=false;
   if(!s.persistent)$('storage').textContent='浏览器未提供持久存储；关闭页面后配装可能丢失，请保留诊断记录。';
  },
  receiveReport(raw,name){
-  reportData=raw;reportName=name;const r=JSON.parse(raw);
-  $('summary').value=`【藏火网页试玩反馈】\n版本：${r.build.version} / ${r.build.commit}\n规则：${r.rules}；内容：${r.content}\n内容指纹：${r.content_digest}\n页面：${r.page}；对局：${r.state?.battle_id||'尚未开战'}\n种子：${r.snapshot?.seed??'未设定'}；窗口：${r.state?.window_id||'无'}\n\n问题描述：\n实际表现：\n期望表现：`;
+  const r=JSON.parse(raw);r.browser_storage=storageMonitor.getStatus();
+  reportData=JSON.stringify(r);reportName=name;
+  $('summary').value=`【藏火网页试玩反馈】\n版本：${r.build.version} / ${r.build.commit}\n规则：${r.rules}；内容：${r.content}\n内容指纹：${r.content_digest}\n页面：${r.page}；对局：${r.state?.battle_id||'尚未开战'}\n种子：${r.snapshot?.seed??'未设定'}；窗口：${r.state?.window_id||'无'}\n保存状态：${r.browser_storage.state}\n\n问题描述：\n实际表现：\n期望表现：`;
   if(!$('report').open)$('report').showModal();
  }
 };
@@ -54,6 +66,7 @@ canvas.addEventListener('contextmenu',e=>e.preventDefault());
 function fail(e){const message=String(e?.message||e);window.canghuoErrors.push(message);$('cover').hidden=false;$('message').textContent='启动失败：'+message;$('play').disabled=true;}
 window.addEventListener('error',e=>window.canghuoErrors.push(e.message));
 window.addEventListener('unhandledrejection',e=>window.canghuoErrors.push(String(e.reason)));
+window.addEventListener('beforeunload',e=>{if(storageMonitor.getStatus().state==='pending'){e.preventDefault();e.returnValue='';}});
 $('play').onclick=async()=>{
  if(running)return;
  if(!window.isSecureContext||!window.crossOriginIsolated||typeof SharedArrayBuffer==='undefined'){fail('此部署缺少 HTTPS 或跨源隔离响应头，无法运行现有AI线程。请反馈部署问题。');return;}
@@ -67,7 +80,12 @@ $('play').onclick=async()=>{
 };
 // Revalidate the lightweight manifest; never replace an active game automatically.
 async function checkUpdate(){if(!loadedMeta)return;try{const res=await fetch('build.json',{cache:'no-store'});if(!res.ok)return;const next=await res.json();if(next.commit!==loadedMeta.commit)$('update').hidden=false;}catch{}}
-$('reload').onclick=()=>{if(confirm('载入新版会结束当前对局，确定继续？'))location.reload();};
+$('reload').onclick=()=>{
+ const s=storageMonitor.getStatus();
+ if(s.state==='pending'){alert('配置尚在保存，请在确认保存后再载入新版。');return;}
+ const warning=s.state==='error'?'配置尚未确认保存，建议先下载诊断。仍要结束当前对局并刷新吗？':'载入新版会结束当前对局，确定继续？';
+ if(confirm(warning))location.reload();
+};
 setInterval(checkUpdate,60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkUpdate();});
 </script>

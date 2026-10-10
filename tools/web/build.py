@@ -68,7 +68,7 @@ def build(engine: Path, output: Path, debug: bool = False, verify: bool = False)
     if not version.startswith('4.7.2.stable'):
         raise ValueError('Expected verified Godot 4.7.2.stable, got ' + version)
     commit = os.environ.get('GITHUB_SHA') or os.environ.get('VERCEL_GIT_COMMIT_SHA') or subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
-    metadata = {'version': '3.0.1-web.1', 'commit': commit, 'engine': version,
+    metadata = {'version': '3.0.1-web.2', 'commit': commit, 'engine': version,
                 'built_at': datetime.now(timezone.utc).isoformat(), 'debug': debug,
                 'source_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip()),
                 'source': 'modules/training-camp/project', 'threaded': True}
@@ -93,7 +93,9 @@ def build(engine: Path, output: Path, debug: bool = False, verify: bool = False)
         run(base + ['--export-debug' if debug else '--export-release', 'Training Web', str(output / 'index.html')], logs / 'export.log', env)
     if fingerprints(SOURCE) != before:
         raise RuntimeError('Web build modified the authoritative source')
-    for required in ('index.html', 'index.js', 'index.wasm', 'index.pck'):
+    # The shell's read-only durability observer runs outside the WASM package.
+    shutil.copyfile(ADAPTER / 'storage.js', output / 'storage.js')
+    for required in ('index.html', 'index.js', 'index.wasm', 'index.pck', 'storage.js'):
         if not (output / required).is_file() or not (output / required).stat().st_size:
             raise RuntimeError('Missing Web export: ' + required)
     metadata['files'] = {p.name: {'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}

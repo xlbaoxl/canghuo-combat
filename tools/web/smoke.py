@@ -47,11 +47,31 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                     log.write(message.type + ': ' + message.text + '\n')
             page.on('console', log_console)
 
+            def failure_state(label: str) -> None:
+                # Capture while the browser is alive, before sync_playwright exits.
+                report['failed_at'] = label
+                report['runtime_messages'] = console_messages
+                try:
+                    report['last_status'] = page.evaluate('window.canghuoStatus')
+                    report['save_status'] = page.evaluate('window.canghuoSaveStatus')
+                    latest = report['last_status'] or {}
+                    print('BROWSER_FAILURE ' + json.dumps({'label': label, 'page': latest.get('page'),
+                        'character': latest.get('character'), 'growth_profile': latest.get('growth_profile'),
+                        'save': report['save_status']}, ensure_ascii=False), flush=True)
+                except Exception as error:
+                    report['diagnostic_error'] = str(error)
+                (output / 'browser-failure.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
+                try:
+                    page.screenshot(path=str(output / 'failure.png'), timeout=5000)
+                except Exception:
+                    pass
+
             def check(condition: bool, label: str) -> None:
                 report['checks'].append({'label': label, 'pass': bool(condition)})
                 print(('PASS ' if condition else 'FAIL ') + label, flush=True)
                 (output / 'browser-progress.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
                 if not condition:
+                    failure_state(label)
                     raise AssertionError(label)
 
             last_state = {}
@@ -70,15 +90,8 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                 try:
                     page.wait_for_function('() => {const s=window.canghuoStatus; return s && (' + expression + ');}', timeout=timeout)
                 except Exception:
-                    # Capture before Playwright tears down the browser on exception.
                     report['wait_failed'] = expression
-                    report['last_status'] = last_state
-                    report['runtime_messages'] = console_messages
-                    (output / 'browser-timeout.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
-                    try:
-                        page.screenshot(path=str(output / 'failure.png'), timeout=5000)
-                    except Exception:
-                        pass
+                    failure_state(expression)
                     raise
 
             def point(x: float, y: float, button: str = 'left') -> None:
@@ -86,7 +99,6 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                 sample = state().get('sample', 0)
                 rect = page.locator('#canvas').bounding_box()
                 page.mouse.click(rect['x'] + x * rect['width'] / 1280, rect['y'] + y * rect['height'] / 720, button=button)
-                # Wait for subsequent game frames, not an optimistic fixed sleep.
                 wait('s.sample >= ' + str(sample + 2))
                 trace('input_settled', sample=state().get('sample'), fps=state().get('fps'))
 
@@ -106,7 +118,6 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
 
             def capture(name: str) -> None:
                 trace('capture', name=name)
-                # Save state before capture too, so graphics stalls remain diagnosable.
                 (output / (name + '-status.json')).write_text(json.dumps(state(), ensure_ascii=False, indent=2))
                 was_running = state()['page'] == 'battle' and not state()['paused']
                 if was_running:
@@ -125,6 +136,43 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                         return
                     click('speed')
                 check(state()['speed'] == 0, 'skip animation selected through widget')
+
+            def persistence_round(character: str, profile: str) -> None:
+                wait('s.page === "characters"')
+                click('character_' + character)
+                wait('s.page === "loadout" && s.character === ' + json.dumps(character))
+                click('profile_' + profile)
+                wait('s.growth_profile === ' + json.dumps(profile))
+                check(state()['character'] == character and state()['growth_profile'] == profile,
+                      f'{character}/{profile}: intended input accepted before saving')
+                click('enter')
+                wait('s.modal')
+                click('mode_mirror')
+                click('choice_easy')
+                revision = page.evaluate('window.canghuoSaveStatus.revision')
+                click('start')
+                wait('s.page === "battle"')
+                expected = state()['snapshot']
+                # No fixed two-second sleep. Require a new, durable save acknowledgement.
+                try:
+                    page.wait_for_function('revision => {const a=window.canghuoSaveStatus; return a && a.revision>revision && a.state!=="pending";}', arg=revision, timeout=45000)
+                except Exception:
+                    failure_state('save acknowledgement timeout')
+                    raise
+                acknowledgement = page.evaluate('window.canghuoSaveStatus')
+                check(acknowledgement['state'] == 'saved', f'{character}/{profile}: IndexedDB commit acknowledged')
+                persisted = page.evaluate('async path => JSON.parse(await CanghuoStorage.readPersisted(path))', acknowledgement['path'])
+                check(persisted['character'] == character and persisted['growth_profile'] == profile and persisted['snapshot'] == expected,
+                      f'{character}/{profile}: actual IndexedDB bytes match current settings and snapshot')
+                trace('durable_save', character=character, growth_profile=profile, acknowledgement=acknowledgement)
+                (output / f'persisted-{character}-{profile}.json').write_text(json.dumps(persisted, ensure_ascii=False, indent=2))
+                page.reload(wait_until='domcontentloaded')
+                page.click('#play')
+                wait('s.page === "characters"', 240000)
+                check(state()['character'] == character and state()['growth_profile'] == profile,
+                      f'{character}/{profile}: settings survive immediate real page reload')
+                check(state()['snapshot'] == expected and bool(expected),
+                      f'{character}/{profile}: only frozen initial snapshot survives reload')
 
             response = page.goto(url, wait_until='domcontentloaded')
             check(response.headers.get('cross-origin-opener-policy') == 'same-origin', 'COOP header')
@@ -229,20 +277,11 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
             check(data['build']['commit'] == report['build']['commit'], 'report bound to running build')
             page.click('#close-report')
             click('edit')
+            wait('s.page === "loadout"')
             click('back_characters')
-            click('character_C02')
-            click('profile_power')
-            click('enter')
-            click('mode_mirror')
-            click('choice_easy')
-            click('start')
-            wait('s.page === "battle"')
-            page.wait_for_timeout(2000)
-            page.reload(wait_until='domcontentloaded')
-            page.click('#play')
-            wait('s.page === "characters"', 240000)
-            check(state()['character'] == 'C02' and state()['growth_profile'] == 'power', 'IndexedDB settings survive a real page reload')
-            check(bool(state()['snapshot']), 'frozen retry snapshot survives reload, not live running state')
+            # Different identities, multiple writes, and returning to an earlier identity.
+            for character, profile in [('C02', 'power'), ('C03', 'base'), ('C02', 'power')]:
+                persistence_round(character, profile)
             page.set_viewport_size({'width': 960, 'height': 760})
             click('character_C01')
             wait('s.page === "loadout"')
