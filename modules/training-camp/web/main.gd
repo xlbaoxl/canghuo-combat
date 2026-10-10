@@ -80,7 +80,7 @@ func _publish_web_status() -> void:
 	}
 	for key in controls:
 		var control = controls[key]
-		if control is Control and is_instance_valid(control) and control.is_visible_in_tree():
+		if is_instance_valid(control) and control is Control and control.is_visible_in_tree():
 			var rect: Rect2 = control.get_global_rect()
 			info.controls[key] = {"x": rect.get_center().x, "y": rect.get_center().y,
 				"disabled": control.disabled if control is BaseButton else false}

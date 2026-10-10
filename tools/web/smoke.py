@@ -43,7 +43,15 @@ def test_web(root: Path, output: Path, executable: str | None = None) -> None:
                 return page.evaluate('window.canghuoStatus')
 
             def wait(expression: str, timeout: int = 120000) -> None:
-                page.wait_for_function('() => {const s=window.canghuoStatus; return s && (' + expression + ');}', timeout=timeout)
+                try:
+                    page.wait_for_function('() => {const s=window.canghuoStatus; return s && (' + expression + ');}', timeout=timeout)
+                except Exception:
+                    # Capture before Playwright tears down the browser on exception.
+                    report['wait_failed'] = expression
+                    report['last_status'] = page.evaluate('window.canghuoStatus')
+                    report['runtime_messages'] = page.evaluate('window.canghuoErrors')
+                    page.screenshot(path=str(output / 'failure.png'), timeout=10000)
+                    raise
 
             def point(x: float, y: float, button: str = 'left') -> None:
                 rect = page.locator('#canvas').bounding_box()
