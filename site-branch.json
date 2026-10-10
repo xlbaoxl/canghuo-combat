@@ -2,6 +2,22 @@
   "schema": 1,
   "kind": "verified-web-runtime-branch",
   "repository": "xlbaoxl/canghuo-combat",
-  "placeholder": true,
-  "hosting_verified": false
+  "source_commit": "de1af10173ae3b5dd8108d21fa89d957483bfadb",
+  "source_run_id": 38034445048,
+  "hosting_verified": false,
+  "files": {
+    "public/build.json": "d0a824544eda0feb8bbe44409d46562bcca9a0a5c5809b958eeaf6f3a13e07ca",
+    "public/index.apple-touch-icon.png": "66c2be0d6024abe4be2b7b8fdb7d884408bb356b1e7334994db592c328a80920",
+    "public/index.audio.position.worklet.js": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8",
+    "public/index.audio.worklet.js": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3",
+    "public/index.html": "5b9d7779275efc671f81f29ab8e49972038d1e70eb97271f938a8bbc428ad552",
+    "public/index.icon.png": "4745373f53a9da1d95ec6f0a378fc72e278ee33eb7b958f9deac66fd3bcbe96a",
+    "public/index.js": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c",
+    "public/index.pck": "d9f4d590231db8d01a8854c5009489a9a3f98ffde698ea72bb882d8f7aa6e2a8",
+    "public/index.png": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e",
+    "public/index.storage.js": "d79e154a1794f6dde9b28c2e78124dfb4f79db4009126ae3bad14b461afb73c3",
+    "public/index.wasm": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051",
+    "public/robots.txt": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1",
+    "vercel.json": "b97a69e1a5d1c537c7523230edd09546fe860fe63349b92ea0514fcb2e709b42"
+  }
 }

@@ -1,0 +1,52 @@
+{
+  "version": "3.0.1-web.2",
+  "commit": "de1af10173ae3b5dd8108d21fa89d957483bfadb",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "built_at": "2026-10-10T07:27:02.299979+00:00",
+  "debug": false,
+  "source_dirty": false,
+  "source": "modules/training-camp/project",
+  "threaded": true,
+  "files": {
+    "index.apple-touch-icon.png": {
+      "bytes": 9119,
+      "sha256": "66c2be0d6024abe4be2b7b8fdb7d884408bb356b1e7334994db592c328a80920"
+    },
+    "index.audio.position.worklet.js": {
+      "bytes": 2973,
+      "sha256": "be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8"
+    },
+    "index.audio.worklet.js": {
+      "bytes": 7298,
+      "sha256": "5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3"
+    },
+    "index.html": {
+      "bytes": 9548,
+      "sha256": "5b9d7779275efc671f81f29ab8e49972038d1e70eb97271f938a8bbc428ad552"
+    },
+    "index.icon.png": {
+      "bytes": 3981,
+      "sha256": "4745373f53a9da1d95ec6f0a378fc72e278ee33eb7b958f9deac66fd3bcbe96a"
+    },
+    "index.js": {
+      "bytes": 314653,
+      "sha256": "1e5437ee16d35bf6f8a3b28e6f70f310ee5da12acab3222a06e8c223cb61757c"
+    },
+    "index.pck": {
+      "bytes": 36037024,
+      "sha256": "d9f4d590231db8d01a8854c5009489a9a3f98ffde698ea72bb882d8f7aa6e2a8"
+    },
+    "index.png": {
+      "bytes": 21443,
+      "sha256": "3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e"
+    },
+    "index.storage.js": {
+      "bytes": 4367,
+      "sha256": "d79e154a1794f6dde9b28c2e78124dfb4f79db4009126ae3bad14b461afb73c3"
+    },
+    "index.wasm": {
+      "bytes": 38820072,
+      "sha256": "f6090f055e16765bcef5dc3a031f68ab40c151d9e7f0541d9d7eb61e92dc5051"
+    }
+  }
+}
