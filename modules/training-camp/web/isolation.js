@@ -54,8 +54,11 @@
     location.reload();
     return registration;
   };
-  Promise.race([
+  const begin = () => Promise.race([
     prepare(),
     new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('初始化超时，请刷新重试')), 30000); })
   ]).catch(showError).finally(() => clearTimeout(timeout));
+  // Let the first document finish loading before a startup navigation.
+  if (document.readyState === 'complete') begin();
+  else window.addEventListener('load', begin, {once: true});
 })();
