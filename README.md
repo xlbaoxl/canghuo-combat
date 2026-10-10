@@ -4,9 +4,13 @@
 
 ## 网页试玩（GitHub Pages）
 
-同一个训练营工程已增加电脑浏览器版，不另写一套战斗规则。**当前采用本公开仓库的 GitHub Pages，不再依赖 Vercel、手机号注册或额外托管账号。**自动发布工作流已合入主分支；先通过规则、原浏览器及 Pages 环境的真实试玩检查，再发布同一份游戏文件。
+**[打开藏火在线战斗训练营](https://xlbaoxl.github.io/canghuo-combat/)**
 
-**首次启用方式及实际发布状态见[网页托管连接](docs/网页托管连接.md)。**测试通过和网站上线分别确认，不能将预计网址当成已发布证据。[网页适配说明](modules/training-camp/web/README.md)与[历史逐轮记录](modules/training-camp/web/WEB_STATUS.md)保留早期实现；其中旧 Vercel 方案已停用，现行托管以本节链接为准。
+2026-10-10 已实际部署并通过真实 HTTPS 浏览器完整对局验收。当前运行版本 **3.0.1-web.2 · a9d79917**；同一个 Godot 训练营工程，不另写战斗规则，不依赖 Vercel、手机号注册或额外托管账号。电脑 Chrome/Edge 为首轮试玩建议，已验证环境为云端 Chromium153/Xvfb/Mesa；其他浏览器和作者在中国大陆的实际网络体验仍需试玩确认。
+
+首次进入可能进行一次多线程环境初始化刷新，随后点击“进入训练营”。开战时保存配置到当前浏览器，刷新结束正在进行的对局；页面上方“反馈本场问题”可复制摘要并下载诊断。相关游戏代码合入 main 后自动测试与发布；文档更新不会重新生成游戏包，页面版本标识以实际运行构建为准。
+
+实际部署、测试回执及维护方式见[网页托管连接](docs/网页托管连接.md)和[首次线上验证回执](docs/verification/pages-live-20261010.json)。[网页适配说明](modules/training-camp/web/README.md)与[历史逐轮记录](modules/training-camp/web/WEB_STATUS.md)保留早期实现；旧 Vercel 方案及“尚未上线”结论已被本节实际验证取代。
 
 ## 工程入口
 
