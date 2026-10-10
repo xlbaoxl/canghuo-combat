@@ -2,9 +2,11 @@
 
 **战斗模块唯一维护仓库：`xlbaoxl/canghuo-combat`。**当前工作树同时包含权威设计文档和实际训练营3.0.1工程；后续战斗设计、实现、测试和发布在本仓继续。旧`canghuo-game`仅保留历史来源及其他系统。
 
-## 网页试玩建设
+## 网页试玩（GitHub Pages）
 
-同一个训练营工程已增加电脑浏览器版，真实 Web 导出和 Chromium/Mesa 核心试玩回归已通过，不另写一套战斗规则。网页入口、保存/反馈、真实浏览器验证和发布门禁见[网页训练营](modules/training-camp/web/README.md)与[逐轮实施记录](modules/training-camp/web/WEB_STATUS.md)。**当前没有已验收的线上试玩网址；托管账号尚待连接，不能把导出文件当成网站已经发布。**
+同一个训练营工程已增加电脑浏览器版，不另写一套战斗规则。**当前采用本公开仓库的 GitHub Pages，不再依赖 Vercel、手机号注册或额外托管账号。**自动发布工作流已合入主分支；先通过规则、原浏览器及 Pages 环境的真实试玩检查，再发布同一份游戏文件。
+
+**首次启用方式及实际发布状态见[网页托管连接](docs/网页托管连接.md)。**测试通过和网站上线分别确认，不能将预计网址当成已发布证据。[网页适配说明](modules/training-camp/web/README.md)与[历史逐轮记录](modules/training-camp/web/WEB_STATUS.md)保留早期实现；其中旧 Vercel 方案已停用，现行托管以本节链接为准。
 
 ## 工程入口
 
