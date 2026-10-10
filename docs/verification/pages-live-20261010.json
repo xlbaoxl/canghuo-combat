@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "kind": "actual-public-pages-browser-verification",
+  "date": "2026-10-10",
+  "repository": "xlbaoxl/canghuo-combat",
+  "url": "https://xlbaoxl.github.io/canghuo-combat/",
+  "source_commit": "a9d79917d592fdf263ec84441e3e8bcbb336838b",
+  "version": "3.0.1-web.2",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "workflow_run_id": 38046215341,
+  "pages_job_id": 114220102442,
+  "pages_job_conclusion": "success",
+  "reused_verified_runtime": true,
+  "rebuilt_game_this_attempt": false,
+  "artifact": {
+    "id": 11670788647,
+    "name": "pages-live-verification",
+    "created_at": "2026-10-10T13:09:41Z",
+    "zip_sha256": "9ae591a464610013b0f01a686e2e26c14750c466f595fac0877c1dd790e4bdb4",
+    "downloaded_and_hash_checked": true,
+    "members_sha256": {
+      "browser-checks.json": "03a624f38cd7935a97b54006d02af776f2ca70a3b594e8dfda74b74e2394d695",
+      "browser-review.json": "e6372129cc425c6ae9046f891e4f15d7c42198988de47730fe471042fa5f32d2",
+      "02-battle.png": "9c35f65c6f6d84d946b69f121b8d056a8e22e60bfadb30c59cd2a6d15a3554e9"
+    }
+  },
+  "browser": {
+    "scope": "Actual public HTTPS GitHub Pages browser playthrough",
+    "version": "153.0.8010.12",
+    "environment": "GitHub Actions / Ubuntu / Xvfb / Mesa",
+    "success": true,
+    "checks_total": 30,
+    "checks_passed": 30,
+    "exceptions": 0,
+    "real_mouse_input": true,
+    "all_hosted_runtime_bytes_match_manifest": true,
+    "running_wasm_commit_matches": true,
+    "threaded_ai": true,
+    "natural_opportunity_and_multiple_skills": true,
+    "independent_cui": true,
+    "abort_and_retry": true,
+    "complete_battle": true,
+    "diagnostic_download": true,
+    "indexeddb_reload": true,
+    "update_probe_simulated": true,
+    "actual_cross_version_update_tested": false,
+    "battle_screenshot_reviewed": true
+  },
+  "battle": {
+    "events": 217,
+    "ai_decisions": 8,
+    "result": "player",
+    "accounting_ok": true
+  },
+  "prepublication_checks": {
+    "original_browser": 47,
+    "headerless_pages_subpath": 31,
+    "not_counted_as_live_checks": true
+  },
+  "previous_failure": {
+    "job_id": 114197135295,
+    "stage": "Configure GitHub Pages",
+    "error": "Resource not accessible by integration",
+    "resolved_by": "Owner enabled GitHub Actions as Pages source; normal failed-job rerun"
+  },
+  "limitations": [
+    "Author device and mainland China connectivity are not tested by this receipt",
+    "Firefox, Safari, mobile and other GPU paths remain unverified",
+    "No automatic rollback after a failed post-deployment browser check",
+    "Diagnostics are not a verified complete AI command replay",
+    "Chat-side URL fetch was unavailable; verification used the actual GitHub Actions browser, not an additional chat-side browser"
+  ]
+}
