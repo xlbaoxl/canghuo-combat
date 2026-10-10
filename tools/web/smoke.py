@@ -131,11 +131,18 @@ def test_web(root: Path, output: Path, executable: str | None = None, headed: bo
                         wait('!s.paused')
 
             def speed_zero() -> None:
-                for _ in range(3):
-                    if state()['speed'] == 0:
+                # A later frame is not proof that the previous click was consumed.
+                # Wait for the exact 1 -> 3 -> 0 widget transition before another click.
+                current = state()['speed']
+                for _ in range(2):
+                    if current == 0:
                         return
+                    expected = {1: 3, 3: 0}[current]
+                    trace('speed_transition', before=current, expected=expected)
                     click('speed')
-                check(state()['speed'] == 0, 'skip animation selected through widget')
+                    wait('s.speed === ' + str(expected))
+                    current = expected
+                check(current == 0, 'skip animation selected through acknowledged widget transitions')
 
             def persistence_round(character: str, profile: str) -> None:
                 wait('s.page === "characters"')

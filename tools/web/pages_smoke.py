@@ -107,9 +107,15 @@ def test_pages(output: Path, root: Path | None = None, url: str | None = None,
             click('templates'); click('template_balanced')
             click('enter'); click('mode_mirror'); click('choice_easy'); click('start')
             wait('s.page === "battle"')
-            for _ in range(3):
-                if state()['speed'] == 0: break
+            # Confirm each speed transition; frame progression alone can be stale.
+            current_speed = state()['speed']
+            for _ in range(2):
+                if current_speed == 0: break
+                expected_speed = {1: 3, 3: 0}[current_speed]
                 click('speed')
+                wait('s.speed === ' + str(expected_speed))
+                current_speed = expected_speed
+            check(current_speed == 0, 'skip animation selected through acknowledged widget transitions')
             ready(); capture('02-battle')
             snapshot = state()['snapshot']
             for _ in range(12):
