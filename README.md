@@ -2,6 +2,12 @@
 
 **战斗模块唯一维护仓库：`xlbaoxl/canghuo-combat`。**当前工作树同时包含权威设计文档和实际训练营3.0.1工程；后续战斗设计、实现、测试和发布在本仓继续。旧`canghuo-game`仅保留历史来源及其他系统。
 
+## 3.0.1 源码（可编辑 Godot 工程）
+
+**[查看 3.0.1 源码](https://github.com/xlbaoxl/canghuo-combat/tree/source/3.0.1/modules/training-camp/project)** · [固定提交快照](https://github.com/xlbaoxl/canghuo-combat/tree/0dbe27ab3dd60c59e6ae2494a3223206c4e3e68d/modules/training-camp/project) · [源码目录与使用说明](docs/3.0.1源码入口.md)
+
+源码快照分支为 `source/3.0.1`，工程入口是 `modules/training-camp/project/project.godot`。该目录包含真实 GDScript、场景、内容数据、资源和测试，工程目录指纹与原始 3.0.1 一致。日常开发仍在 `main`；旧 `web-playtest-site` 分支和 `web-playable-release` 是网页运行产物，不是源码入口。
+
 ## 网页试玩（GitHub Pages）
 
 **[打开藏火在线战斗训练营](https://xlbaoxl.github.io/canghuo-combat/)**
